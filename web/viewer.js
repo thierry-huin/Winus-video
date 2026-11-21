@@ -660,13 +660,13 @@ function renderPeerSidebar(streams) {
     <div class="sidebar-box">
       <div class="sidebar-box-fader-row">
         <div class="fader-vertical-wrap">
-          <input type="range" min="0" max="100" value="${value}" title="Volumen de ${user} (solo para vos)"
+          <input type="range" min="0" max="100" value="${value}" aria-label="Volumen del comentarista" title="Volumen de ${user} (solo para vos)"
             oninput="setPgmPeerVolume(${slot}, this.value/100)">
         </div>
         <div id="peer-vu-${slot}" class="sidebar-vu-meter" title="Nivel de ${user}"></div>
       </div>
       <button type="button" class="btn-peer-talk ${talking ? 'active' : ''}" data-slot="${slot}" onclick="togglePeerTalk(${slot})"
-        title="Hablarle a ${user} (click para activar/desactivar)">📞 ${user}</button>
+        title="Hablarle a ${user} (click para activar/desactivar)">${user}</button>
     </div>`;
   }).join('');
 }
@@ -1654,15 +1654,15 @@ function renderPgmSlots(s) {
       : '';
     return `
     <div class="admin-pgm-slot">
-      <span style="width:56px; color:#666680;">Slot ${i + 1}</span>
-      <span style="flex:1; display:flex; align-items:center; gap:6px; ${slot ? '' : 'color:#666680; font-style:italic;'}">${talkbackDot}${label}</span>
+      <span style="width:56px; color:var(--color-text-muted);">Slot ${i + 1}</span>
+      <span style="flex:1; display:flex; align-items:center; gap:var(--space-sm); ${slot ? '' : 'color:var(--color-text-muted); font-style:italic;'}">${talkbackDot}${label}</span>
       <div id="${vuId}" class="admin-vu-meter" title="Nivel PGM"></div>
       <input type="range" min="0" max="200" value="${volumePct}" ${slot ? '' : 'disabled'}
         onmousedown="adminPanelHoldStart()" onmouseup="adminPanelHoldEnd()"
         ontouchstart="adminPanelHoldStart()" ontouchend="adminPanelHoldEnd()"
-        oninput="setPgmVolume('${s.streamId}', ${i}, this.value/100)" title="Volumen">
+        oninput="setPgmVolume('${s.streamId}', ${i}, this.value/100)" aria-label="Volumen PGM" title="Volumen">
       <button type="button" class="btn-admin-talk" ${slot ? '' : 'disabled'} ${talkHandlers}
-        title="Hablar en privado con este comentarista (mantener presionado)">🎙️ Hablar</button>
+        title="Hablar en privado con este comentarista (mantener presionado)">Hablar</button>
     </div>`;
   }).join('');
   // Whole-group "incoming call" box (see .admin-pgm-slots.talkback-active):
@@ -1681,9 +1681,9 @@ function renderPgmSlots(s) {
       `ontouchend="event.preventDefault(); adminPanelHoldEnd(); stopAdminTalk()"`
     : '';
   return `<div class="admin-pgm-slots${callActive}">
-    <div style="display:flex; justify-content:flex-end; margin-bottom:6px;">
+    <div style="display:flex; justify-content:flex-end; margin-bottom:var(--space-sm);">
       <button type="button" class="btn-admin-talk-all" ${anyActive ? '' : 'disabled'} ${talkAllHandlers}
-        title="Hablar a los 3 comentaristas a la vez (mantener presionado)">🎙️ Hablar a los 3</button>
+        title="Hablar a los 3 comentaristas a la vez (mantener presionado)">Hablar a los 3</button>
     </div>
     ${rows}
   </div>`;
@@ -1710,9 +1710,9 @@ function renderTalkbackStatus(s) {
   const inSomeSlot = Array.isArray(s.pgmSlots) && s.pgmSlots.some(slot => slot && slot.peerId === s.talkbackPeerId);
   if (inSomeSlot) return '';
   return `
-    <div style="display:flex; align-items:center; gap:8px; font-size:12px; color:#666680; margin-top:6px;">
+    <div style="display:flex; align-items:center; gap:var(--space-sm); font-size:var(--text-sm); color:var(--color-text-muted); margin-top:var(--space-sm);">
       <span style="width:11px; height:11px; border-radius:50%; display:inline-block; flex-shrink:0;
-        background:#00e676; box-shadow:0 0 6px #00e676;"></span>
+        background:var(--color-success); "></span>
       <span>Talkback: ${s.talkbackUser || 'activo'}</span>
     </div>`;
 }
@@ -1731,15 +1731,15 @@ function renderConnectedGuests(s) {
     const slot = slots.find((sl) => sl && sl.peerId === g.peerId);
     const label = slot?.user || 'Invitado';
     return `
-    <div style="display:flex; align-items:center; gap:8px; padding:2px 0; font-size:12px;">
-      <span style="flex:1; color:#a0a0b8;">\u{1F464} ${label}</span>
+    <div style="display:flex; align-items:center; gap:var(--space-sm); padding:var(--space-2xs) 0; font-size:var(--text-sm);">
+      <span style="flex:1; color:var(--color-text-muted);">${label}</span>
       <button type="button" onclick="disconnectGuest('${g.peerId}')"
-        style="background:#ff5252; font-size:11px; padding:2px 8px;" title="Desconectar a este invitado">❌ Desconectar</button>
+        style="background:var(--color-danger-subtle); font-size:var(--text-sm); padding:var(--space-2xs) var(--space-sm); color:var(--color-danger-hover);" title="Desconectar a este invitado">Desconectar</button>
     </div>`;
   }).join('');
   return `
-    <div style="margin-top:6px; padding-top:6px; border-top:1px dashed #333;">
-      <div style="font-size:11px; color:#666680; margin-bottom:2px;">Invitados conectados (${guests.length})</div>
+    <div style="margin-top:var(--space-sm); padding-top:var(--space-sm); border-top:1px dashed var(--color-border);">
+      <div style="font-size:var(--text-sm); color:var(--color-text-muted); margin-bottom:var(--space-2xs);">Invitados conectados (${guests.length})</div>
       ${rows}
     </div>`;
 }
@@ -1757,7 +1757,7 @@ function renderAdminStreamsList() {
   // 'streams' push after release re-renders normally.
   if (adminPanelSuspendRender) return;
   if (!lastStreams.length) {
-    container.innerHTML = '<div style="color:#666680; font-size:13px; padding:4px 0;">No active streams</div>';
+    container.innerHTML = '<div style="color:var(--color-text-muted); font-size:var(--text-base); padding:var(--space-xs) 0;">No active streams</div>';
     return;
   }
   // A 'publisher' account ("streamer") sees EVERY stream in this list (just
@@ -1782,26 +1782,26 @@ function renderAdminStreamsList() {
     const listening = pgmListenStreamId === s.streamId;
     const manageControls = canManage ? `
         <button type="button" class="btn-pgm-listen ${listening ? 'active' : ''}" onclick="togglePgmListen('${s.streamId}')"
-          title="Escuchar el PGM de este stream (solo escucha, no habla)">${listening ? '🔊 Escuchando PGM' : '🔈 Escuchar PGM'}</button>` : '';
+          title="Escuchar el PGM de este stream (solo escucha, no habla)">${listening ? 'Escuchando PGM' : 'Escuchar PGM'}</button>` : '';
     const forceStopBtn = isAdmin ? `
-        <button onclick="forceStopStream('${s.streamId}')" style="background:#ff5252; font-size:11px; padding:3px 10px;"
-          title="Cierra este stream ahora mismo en el servidor, sin afectar a los demás (el publisher deberá volver a iniciarlo)">🛑 Forzar cierre</button>` : '';
+        <button onclick="forceStopStream('${s.streamId}')" style="background:var(--color-danger-subtle); font-size:var(--text-sm); padding:var(--space-xs) var(--space-md); color:var(--color-danger-hover);"
+          title="Cierra este stream ahora mismo en el servidor, sin afectar a los demás (el publisher deberá volver a iniciarlo)">Forzar cierre</button>` : '';
     const linkButtons = canManage ? `
-        <span class="link-status" data-stream="${s.streamId}" style="font-size:11px; color:#666680; min-width:140px;"></span>
-        <button onclick="copyGuestLink('${s.streamId}')" style="background:#00c9db; color:#1a1a2e; font-size:11px; padding:3px 10px;">🔗 Copiar enlace</button>
-        <button onclick="regenerateGuestLink('${s.streamId}')" style="background:#ffab40; color:#1a1a2e; font-size:11px; padding:3px 10px;"
-          title="Genera un enlace nuevo; el viejo deja de servir para conectarse (no desconecta a quién ya está conectado)">🆕 New Link</button>` : '';
+        <span class="link-status" data-stream="${s.streamId}" style="font-size:var(--text-sm); color:var(--color-text-muted); min-width:140px;"></span>
+        <button onclick="copyGuestLink('${s.streamId}')" style="background:var(--color-surface-raised); color:var(--color-info); font-size:var(--text-sm); padding:var(--space-xs) var(--space-md);">Copiar enlace</button>
+        <button onclick="regenerateGuestLink('${s.streamId}')" style="background:var(--color-surface-raised); color:var(--color-text); font-size:var(--text-sm); padding:var(--space-xs) var(--space-md);"
+          title="Genera un enlace nuevo; el viejo deja de servir para conectarse (no desconecta a quién ya está conectado)">New Link</button>` : '';
     // HLS link (WebOS/Smart TV): every logged-in role can generate/copy it
     // (see hlsLinkAuth server-side), unlike the guest link -- so this is
     // shown for EVERY stream row here, not just canManage ones.
     const hlsLinkButton = `
-        <span class="hls-link-status" data-stream="${s.streamId}" style="font-size:11px; color:#666680; min-width:100px;"></span>
-        <button onclick="copyHlsLink('${s.streamId}')" style="background:#7b2ff7; color:#fff; font-size:11px; padding:3px 10px;"
-          title="Copiar enlace HLS (para reproducir en Smart TV/WebOS)">📺 Copiar HLS</button>`;
+        <span class="hls-link-status" data-stream="${s.streamId}" style="font-size:var(--text-sm); color:var(--color-text-muted); min-width:100px;"></span>
+        <button onclick="copyHlsLink('${s.streamId}')" style="background:var(--color-surface-raised); color:var(--color-text); font-size:var(--text-sm); padding:var(--space-xs) var(--space-md);"
+          title="Copiar enlace HLS (para reproducir en Smart TV/WebOS)">Copiar HLS</button>`;
     return `
-    <div style="padding:8px; border-bottom:1px solid #333;">
-      <div style="display:flex; align-items:center; gap:10px;">
-        <span style="flex:1; font-weight:bold;">${label}</span>${manageControls}
+    <div style="padding:var(--space-sm); border-bottom:1px solid var(--color-border);">
+      <div style="display:flex; align-items:center; gap:var(--space-md);">
+        <span style="flex:1; font-weight:var(--font-weight-bold);">${label}</span>${manageControls}
         ${linkButtons}${hlsLinkButton}${forceStopBtn}
       </div>
       ${canManage ? renderTalkbackStatus(s) : ''}
@@ -1945,15 +1945,15 @@ async function loadUsers() {
   const users = await res.json();
   const list = document.getElementById('user-list');
   list.innerHTML = users.map(u => `
-    <div style="display:flex; align-items:center; gap:10px; padding:8px; border-bottom:1px solid #333;">
-      <span style="flex:1; font-weight:bold;">${u.username}</span>
-      <select onchange="changeRole(${u.id}, this.value)" style="padding:3px 6px; border-radius:4px; border:1px solid #333; background:#1a1a2e; color:#7b2ff7; font-size:12px;">
+    <div style="display:flex; align-items:center; gap:var(--space-md); padding:var(--space-sm); border-bottom:1px solid var(--color-border);">
+      <span style="flex:1; font-weight:var(--font-weight-bold);">${u.username}</span>
+      <select aria-label="Role" onchange="changeRole(${u.id}, this.value)" style="padding:var(--space-xs) var(--space-sm); border-radius:var(--radius-sm); border:1px solid var(--color-border); background:var(--color-bg); color:var(--color-text); font-size:var(--text-sm);">
         <option value="viewer" ${u.role==='viewer'?'selected':''}>viewer</option>
         <option value="publisher" ${u.role==='publisher'?'selected':''}>publisher</option>
         <option value="admin" ${u.role==='admin'?'selected':''}>admin</option>
       </select>
-      <button onclick="editPassword(${u.id}, '${u.username}')" style="background:#666; font-size:11px; padding:3px 10px;">🔑 Pass</button>
-      <button onclick="deleteUser(${u.id}, '${u.username}')" style="background:#ff5252; font-size:11px; padding:3px 10px;">Delete</button>
+      <button onclick="editPassword(${u.id}, '${u.username}')" style="background:var(--color-surface-raised); font-size:var(--text-sm); padding:var(--space-xs) var(--space-md);">Pass</button>
+      <button onclick="deleteUser(${u.id}, '${u.username}')" style="background:var(--color-danger-subtle); font-size:var(--text-sm); padding:var(--space-xs) var(--space-md); color:var(--color-danger-hover);">Delete</button>
     </div>
   `).join('');
 }

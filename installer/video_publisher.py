@@ -29,19 +29,56 @@ CONFIG_FILE = Path.home() / ".config" / "winus-video-publisher.json"
 # to bump the version, nowhere else.
 APP_VERSION = "v1.0"
 
-# Theme
-COLOR_BG = "#1a1a2e"
-COLOR_CARD = "#16213e"
-COLOR_ACCENT = "#7b2ff7"
-COLOR_ACCENT2 = "#00c9db"
-COLOR_GREEN = "#00e676"
-COLOR_RED = "#ff5252"
-COLOR_ORANGE = "#ffab40"
-COLOR_BLUE = "#2196f3"
-COLOR_TEXT = "#e0e0e0"
-COLOR_DIM = "#666680"
+# Theme — kept in sync with web/shared/design-tokens.css (the shared
+# design system used by both qc.html and index.html/viewer.js).
+# CustomTkinter has no stylesheet, so these are plain Python constants
+# instead of CSS custom properties, but the VALUES and semantic roles
+# mirror that file 1:1 wherever a widget here needs the same meaning
+# (brand/select/info/success/warning/danger). Input widgets (CTkEntry/
+# CTkComboBox/CTkCheckBox) and the scrollbar still use CustomTkinter's
+# own "dark-blue" theme (see set_default_color_theme below) rather than
+# these constants -- retheming those globally is a much larger, higher-
+# risk change (affects every combobox arrow/checkmark/scrollbar thumb)
+# that wasn't part of this pass.
+COLOR_BG = "#1a1a2e"            # --color-bg
+COLOR_CARD = "#16213e"          # --color-surface
+COLOR_WELL = "#000000"          # --color-well (recessed areas: log panel)
+COLOR_TEXT = "#e0e0e0"          # --color-text
+COLOR_DIM = "#666680"           # --color-text-dim; also doubles as this
+                                 # app's neutral/"not pressed" button fill --
+                                 # CTk buttons have no border, so a mid-tone
+                                 # fill does the job the web's bordered
+                                 # secondary button does with a dark navy
+                                 # fill + border.
+COLOR_DIM_HOVER = "#7a7a94"     # lightened COLOR_DIM, button hover feedback
+
+COLOR_ACCENT = "#7b2ff7"        # --color-brand
+COLOR_ACCENT_HOVER = "#9b6bff"  # --color-brand-hover
+
+COLOR_SELECT = "#2979ff"        # --color-select ("pressed/active" convention;
+                                 # was #2196f3/COLOR_BLUE)
+COLOR_SELECT_HOVER = "#1f5fd1"  # darkened COLOR_SELECT, button hover feedback
+
+COLOR_ACCENT2 = "#00c9db"       # --color-info
+
+COLOR_GREEN = "#00e676"         # --color-success
+COLOR_GREEN_HOVER = "#00c853"   # --color-success-hover
+
+COLOR_ORANGE = "#f59e0b"        # --color-warning (was #ffab40 -- the same
+                                 # amber drift the web redesign consolidated)
+COLOR_ORANGE_HOVER = "#ffb84d"  # --color-warning-hover
+
+COLOR_RED = "#ff5252"           # --color-danger
+COLOR_RED_HOVER = "#ff8a80"     # --color-danger-hover (was a darker #d32f2f;
+                                 # lightening on hover, not darkening, is the
+                                 # correct dark-mode convention and now
+                                 # matches web/shared/design-tokens.css)
+
 COLOR_ROW_EVEN = "#1a1a2e"
-COLOR_ROW_ODD = "#0f3460"
+COLOR_ROW_ODD = "#0f3460"       # no equivalent in the shared web tokens
+                                 # (desktop-only zebra-stripe accent); left
+                                 # as-is, there's no row-striping convention
+                                 # on the web side to align it to.
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("dark-blue")
@@ -1128,8 +1165,8 @@ class StreamRow:
         # Publish button
         self.pub_btn = ctk.CTkButton(self.frame, text="▶", width=40, height=28,
                                       font=("SF Pro Display", 14, "bold"),
-                                      fg_color=COLOR_GREEN, hover_color="#00c853",
-                                      text_color="#1a1a2e",
+                                      fg_color=COLOR_GREEN, hover_color=COLOR_GREEN_HOVER,
+                                      text_color=COLOR_BG,
                                       command=self._on_click)
         self.pub_btn.grid(row=0, column=col, padx=(4, 8), pady=4)
         col += 1
@@ -1146,7 +1183,7 @@ class StreamRow:
         self.clock_var = tk.BooleanVar(value=False)
         self.clock_btn = ctk.CTkButton(self.frame, text="⏱", width=32, height=28,
                                         font=("SF Pro Display", 12, "bold"),
-                                        fg_color=COLOR_DIM, hover_color="#555568",
+                                        fg_color=COLOR_DIM, hover_color=COLOR_DIM_HOVER,
                                         command=self._toggle_clock_overlay)
         self.clock_btn.grid(row=0, column=col, padx=(0, 4), pady=4)
         col += 1
@@ -1204,15 +1241,15 @@ class StreamRow:
 
     def _apply_clock_style(self):
         if self.clock_var.get():
-            self.clock_btn.configure(fg_color=COLOR_BLUE, hover_color="#1976d2", text_color="#ffffff")
+            self.clock_btn.configure(fg_color=COLOR_SELECT, hover_color=COLOR_SELECT_HOVER, text_color="#ffffff")
         else:
-            self.clock_btn.configure(fg_color=COLOR_DIM, hover_color="#555568", text_color=COLOR_TEXT)
+            self.clock_btn.configure(fg_color=COLOR_DIM, hover_color=COLOR_DIM_HOVER, text_color=COLOR_TEXT)
 
     def _apply_on_air_style(self):
         if self.on_air:
-            self.onair_btn.configure(fg_color=COLOR_RED, hover_color="#d32f2f", text_color="#ffffff")
+            self.onair_btn.configure(fg_color=COLOR_RED, hover_color=COLOR_RED_HOVER, text_color="#ffffff")
         else:
-            self.onair_btn.configure(fg_color=COLOR_DIM, hover_color="#555568", text_color=COLOR_TEXT)
+            self.onair_btn.configure(fg_color=COLOR_DIM, hover_color=COLOR_DIM_HOVER, text_color=COLOR_TEXT)
 
     def _open_return_audio_dialog(self):
         """'Tie-line' style routing: pick an output device + channel pair for
@@ -1305,7 +1342,7 @@ class StreamRow:
                     pass
             self.process = None
         self.status_dot.configure(text_color=COLOR_DIM)
-        self.pub_btn.configure(text="▶", fg_color=COLOR_GREEN, hover_color="#00c853")
+        self.pub_btn.configure(text="▶", fg_color=COLOR_GREEN, hover_color=COLOR_GREEN_HOVER)
         self.info_label.configure(text="")
         self._set_enabled(True)
         # Stream is gone server-side too (unpublishStream drops the onAir flag
@@ -1320,7 +1357,7 @@ class StreamRow:
     def set_publishing(self, proc: subprocess.Popen):
         self.process = proc
         self.status_dot.configure(text_color=COLOR_GREEN)
-        self.pub_btn.configure(text="■", fg_color=COLOR_RED, hover_color="#d32f2f")
+        self.pub_btn.configure(text="■", fg_color=COLOR_RED, hover_color=COLOR_RED_HOVER)
         self._set_enabled(False)
         self.onair_btn.configure(state="normal")
 
@@ -1591,7 +1628,7 @@ class VideoPublisherApp:
         num_pages = self.NUM_STREAMS // self.STREAMS_PER_PAGE
         for p in range(num_pages):
             btn = ctk.CTkButton(srv, text=str(p + 1), width=30, height=30,
-                                 fg_color=COLOR_DIM,
+                                 fg_color=COLOR_DIM, hover_color=COLOR_DIM_HOVER,
                                  command=lambda p=p: self._show_page(p))
             btn.pack(side="left", padx=2, pady=8)
             self.page_btns.append(btn)
@@ -1625,7 +1662,7 @@ class VideoPublisherApp:
         self._show_page(0)
 
         # Log
-        self.log_text = tk.Text(self.root, bg="#0f0f1e", fg=COLOR_TEXT,
+        self.log_text = tk.Text(self.root, bg=COLOR_WELL, fg=COLOR_TEXT,
                                  font=("Menlo", 10), wrap="word", height=6,
                                  borderwidth=0, highlightthickness=0)
         self.log_text.pack(fill="x", padx=10, pady=(0, 8))
@@ -1649,9 +1686,9 @@ class VideoPublisherApp:
                 row.frame.pack_forget()
         for i, btn in enumerate(self.page_btns):
             if i == page:
-                btn.configure(fg_color=COLOR_BLUE, hover_color="#1976d2", text_color="#ffffff")
+                btn.configure(fg_color=COLOR_SELECT, hover_color=COLOR_SELECT_HOVER, text_color="#ffffff")
             else:
-                btn.configure(fg_color=COLOR_DIM, hover_color="#555568", text_color=COLOR_TEXT)
+                btn.configure(fg_color=COLOR_DIM, hover_color=COLOR_DIM_HOVER, text_color=COLOR_TEXT)
 
     def _toggle_logs(self):
         """Show/hide the log panel without losing its scrollback."""

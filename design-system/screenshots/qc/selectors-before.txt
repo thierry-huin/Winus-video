@@ -1,0 +1,113 @@
+getElementById('lang-select');
+querySelectorAll('[data-i18n]').forEach((el) => { el.textContent = t(el.dataset.i18n); });
+querySelectorAll('[data-i18n-placeholder]').forEach((el) => { el.placeholder = t(el.dataset.i18nPlaceholder); });
+querySelectorAll('[data-i18n-title]').forEach((el) => { el.title = t(el.dataset.i18nTitle); });
+getElementById('tab-incidents');
+classList.contains('active')) { loadIncidentsList(); loadSessionsTable(); }
+getElementById('tab-users');
+classList.contains('active')) loadQcUsers();
+getElementById('lang-select');
+getElementById('login-screen').style.display = 'flex';
+getElementById('main-screen').style.display = 'none';
+getElementById('login-user').value.trim();
+getElementById('login-pass').value.trim();
+getElementById('login-error');
+getElementById('login-screen').style.display = 'none';
+getElementById('main-screen').style.display = 'block';
+getElementById('qc-username').textContent = currentUsername;
+getElementById('view-as-select');
+getElementById('view-as-select');
+getElementById('view-as-banner');
+getElementById('nav-users').style.display = isSup ? 'inline-block' : 'none';
+getElementById('btn-close-day').style.display = isSup ? 'inline-block' : 'none';
+getElementById('tab-users');
+classList.contains('active')) { showTab('monitor'); return; }
+getElementById('tab-incidents')?.classList.contains('active')) { loadIncidentsList(); loadSessionsTable(); }
+classList.contains('active')) loadQcUsers();
+getElementById('login-screen').style.display = 'none';
+getElementById('main-screen').style.display = 'none';
+getElementById('pwchange-screen').style.display = 'flex';
+getElementById('pwchange-current').value;
+getElementById('pwchange-new').value;
+getElementById('pwchange-confirm').value;
+getElementById('pwchange-error');
+getElementById('pwchange-screen').style.display = 'none';
+getElementById(containerId);
+classList.remove('lit-green', 'lit-orange', 'lit-red');
+classList.add(posPct > 80 ? 'lit-red' : posPct > 60 ? 'lit-orange' : 'lit-green');
+getElementById('monitor-grid');
+querySelectorAll('.feed-cell').forEach((el, i) => {
+getElementById(`feed-cell-${cellIndex}`);
+dataset.pos
+querySelectorAll('.feed-picker').forEach((select) => {
+dataset.cell
+getElementById(`feed-video-${cellIndex}`);
+getElementById(`feed-label-${cellIndex}`).textContent = stream?.streamName || streamId;
+getElementById(`feed-video-${cellIndex}`);
+getElementById(`feed-label-${cellIndex}`);
+querySelector(`.feed-picker[data-cell="${cellIndex}"]`);
+getElementById(`feed-video-${cellIndex}`);
+getElementById(`feed-mute-${cellIndex}`);
+getElementById(`feed-video-${cellIndex}`);
+querySelectorAll('.feed-cell').forEach((el, i) => el.classList.toggle('active-feed', i === cellIndex));
+getElementById(`feed-video-${i}`);
+getElementById(`feed-cell-${cellIndex}`);
+querySelectorAll('.feed-cell').forEach((el) => el.classList.toggle('cell-fullscreen', document.fullscreenElement === el));
+getElementById(`feed-nosignal-${cellIndex}`);
+getElementById(`feed-nosignal-${cellIndex}`);
+getElementById(`feed-session-${i}`);
+getElementById('active-feed-bar');
+getElementById('tab-incidents').classList.contains('active')) loadIncidentsList();
+getElementById('active-feed-bar');
+classList.add('flash');
+classList.remove('flash'), 400);
+getElementById('pending-badge');
+getElementById('operator-filter');
+getElementById('incidents-list');
+getElementById('describe-category').innerHTML = INCIDENT_CATEGORIES.map((c) => `<option value="${c.code}">${t(c.key)}</option>`).join('');
+getElementById('describe-severity').value = 'P2';
+getElementById('describe-desc').value = '';
+getElementById('describe-snapshot-preview');
+getElementById('describe-clip-btn-wrap');
+getElementById('describe-modal-overlay').classList.add('active');
+getElementById('clip-player');
+getElementById('clip-modal-overlay').classList.add('active');
+getElementById('clip-player');
+getElementById('clip-modal-overlay').classList.remove('active');
+getElementById('describe-modal-overlay').classList.remove('active');
+getElementById(`feed-video-${cellIndex}`);
+getElementById('describe-snapshot-preview');
+dataset.fresh
+getElementById('describe-category').value;
+getElementById('describe-severity').value;
+getElementById('describe-desc').value.trim();
+getElementById('describe-snapshot-preview');
+dataset.fresh
+dataset.fresh
+classList.add('p1-alert-active');
+classList.remove('p1-alert-active');
+getElementById('p1-alert-banner');
+getElementById('report-overlay');
+getElementById('report-body');
+getElementById('report-export-csv').onclick = () => downloadCsv(csvPath, csvName);
+classList.add('active');
+getElementById('report-exec-summary').value;
+getElementById('report-recommendations').value;
+getElementById('report-notes-saved');
+getElementById('report-overlay').classList.remove('active');
+getElementById('sessions-show-archive').checked;
+getElementById('sessions-table');
+getElementById('qc-users-list');
+getElementById('audit-log-section');
+getElementById('audit-log-table');
+getElementById('qc-new-username').value = '';
+getElementById('qc-new-role').value = 'qc_engineer';
+getElementById('qc-new-permanent').checked = false;
+getElementById('qc-create-user-form').style.display = 'block';
+getElementById('qc-new-username').value.trim();
+getElementById('qc-new-role').value;
+getElementById('qc-new-permanent').checked;
+getElementById('qc-create-user-form').style.display = 'none';
+querySelectorAll('.qc-tab').forEach((el) => el.classList.toggle('active', el.dataset.tab === name));
+querySelectorAll('.qc-tab-content').forEach((el) => el.classList.toggle('active', el.id === `tab-${name}`));
+getElementById('tab-incidents')?.classList.contains('active')) loadIncidentsList();

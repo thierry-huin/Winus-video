@@ -4,86 +4,87 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>QC Editorial — Winus Video</title>
+  <link rel="stylesheet" href="shared/design-tokens.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #1a1a2e; color: #e0e0e0; font-family: system-ui, sans-serif; }
-    button { background: #f59e0b; color: #1a1a2e; border: none; padding: 7px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; }
-    button:hover { background: #ffb84d; }
-    button.btn-danger { background: #ff5252; color: #fff; }
-    button.btn-danger:hover { background: #ff8a80; }
+    body { background: var(--color-bg); color: var(--color-text); font-family: var(--font-sans); }
+    button { background: var(--color-brand); color: var(--color-bg); border: none; padding: var(--space-sm) var(--space-lg); border-radius: var(--radius-md); cursor: pointer; font-size: var(--text-base); font-weight: var(--font-weight-bold); }
+    button:hover { background: var(--color-brand-hover); }
+    button.btn-danger { background: var(--color-danger); color: var(--color-well); }
+    button.btn-danger:hover { background: var(--color-danger-hover); }
     select, input[type=text], input[type=password], textarea {
-      padding: 7px 10px; border-radius: 6px; border: 1px solid #333; background: #16213e; color: #e0e0e0; font-size: 13px;
+      padding: var(--space-sm) var(--space-md); border-radius: var(--radius-md); border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text); font-size: var(--text-base);
     }
     /* ── Login / forced password change ── */
     #login-screen, #pwchange-screen {
       display: flex; justify-content: center; align-items: center; height: 100vh;
     }
-    .auth-card { background: #16213e; padding: 40px; border-radius: 16px; width: 360px; text-align: center; }
-    .auth-card h2 { margin-bottom: 8px; color: #f59e0b; }
-    .auth-card p.sub { font-size: 12px; color: #94a3b8; margin-bottom: 20px; }
-    .auth-card input { width: 100%; margin: 6px 0; }
-    .auth-card button { width: 100%; padding: 12px; font-size: 15px; margin-top: 10px; }
-    .auth-error { color: #ff5252; font-size: 12px; min-height: 18px; margin: 6px 0; }
+    .auth-card { background: var(--color-surface); padding: var(--space-2xl); border-radius: var(--radius-lg); width: 360px; text-align: center; }
+    .auth-card h2 { margin-bottom: var(--space-sm); color: var(--color-brand); }
+    .auth-card p.sub { font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-xl); }
+    .auth-card input { width: 100%; margin: var(--space-sm) 0; }
+    .auth-card button { width: 100%; padding: var(--space-md); font-size: var(--text-md); margin-top: var(--space-md); }
+    .auth-error { color: var(--color-danger); font-size: var(--text-sm); min-height: 18px; margin: var(--space-sm) 0; }
     #pwchange-screen { display: none; }
 
     /* ── Header / tabs ── */
     #main-screen { display: none; }
     .qc-header {
-      background: #16213e; padding: 10px 20px; display: flex; align-items: center; gap: 16px;
-      border-bottom: 2px solid #f59e0b;
+      background: var(--color-surface); padding: var(--space-md) var(--space-xl); display: flex; align-items: center; gap: var(--space-lg);
+      border-bottom: 2px solid var(--color-brand);
     }
-    .qc-header h1 { font-size: 18px; color: #f59e0b; }
-    .qc-header .qc-badge { background: #f59e0b; color: #1a1a2e; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; }
+    .qc-header h1 { font-size: var(--text-lg); color: var(--color-brand); }
+    .qc-header .qc-badge { background: var(--color-brand); color: var(--color-bg); padding: var(--space-2xs) var(--space-md); border-radius: var(--radius-lg); font-size: var(--text-xs); font-weight: var(--font-weight-bold); }
     .qc-header .spacer { flex: 1; }
     .qc-header a.coms-link {
-      color: #00e676; font-size: 12px; text-decoration: none; margin-right: 10px;
-      border: 1px solid #00e676; border-radius: 6px; padding: 4px 10px; display: inline-block;
+      color: var(--color-success); font-size: var(--text-sm); text-decoration: none; margin-right: var(--space-md);
+      border: 1px solid var(--color-success); border-radius: var(--radius-md); padding: var(--space-xs) var(--space-md); display: inline-block;
     }
-    .qc-header a.coms-link:hover { background: #00e67622; }
-    #lang-select { font-size: 11px; padding: 4px 6px; margin-right: 4px; }
-    .qc-tabs { display: flex; gap: 4px; background: #16213e; padding: 0 20px; }
+    .qc-header a.coms-link:hover { background: var(--color-info-subtle); }
+    #lang-select { font-size: var(--text-xs); padding: var(--space-xs) var(--space-sm); margin-right: var(--space-xs); }
+    .qc-tabs { display: flex; gap: var(--space-xs); background: var(--color-surface); padding: 0 var(--space-xl); }
     .qc-tab {
-      background: transparent; color: #94a3b8; padding: 10px 16px; border-radius: 0;
-      border-bottom: 3px solid transparent; font-size: 13px;
+      background: transparent; color: var(--color-text-muted); padding: var(--space-md) var(--space-lg); border-radius: 0;
+      border-bottom: 3px solid transparent; font-size: var(--text-base);
     }
-    .qc-tab.active { color: #f59e0b; border-bottom-color: #f59e0b; }
-    .qc-tab:hover { background: #1a1a2e; }
+    .qc-tab.active { color: var(--color-brand); border-bottom-color: var(--color-brand); }
+    .qc-tab:hover { background: var(--color-bg); }
     #pending-badge {
-      display: none; background: #ff5252; color: #fff; border-radius: 10px; padding: 1px 7px;
-      font-size: 11px; margin-left: 4px;
+      display: none; background: var(--color-danger); color: var(--color-well); border-radius: var(--radius-lg); padding: var(--space-2xs) var(--space-sm);
+      font-size: var(--text-xs); margin-left: var(--space-xs);
     }
-    .qc-tab-content { display: none; padding: 20px; }
+    .qc-tab-content { display: none; padding: var(--space-xl); }
     .qc-tab-content.active { display: block; }
 
     /* ── P1 on-screen/sound alert (urgent #1) ── */
     /* "menos de un destello por segundo" -- deliberately slower than 1/s.
        prefers-reduced-motion gets a fixed border instead of the pulse. */
     #p1-alert-banner {
-      display: none; flex-direction: column; gap: 6px; background: #3a0d0d; border-bottom: 2px solid #ff5252;
-      padding: 10px 20px; position: sticky; top: 0; z-index: 1500;
+      display: none; flex-direction: column; gap: var(--space-sm); background: var(--color-danger-subtle); border-bottom: 2px solid var(--color-danger);
+      padding: var(--space-md) var(--space-xl); position: sticky; top: 0; z-index: 1500;
     }
-    .p1-alert-item { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #ffb4b4; flex-wrap: wrap; }
-    .p1-alert-item button { background: #ff5252; color: #fff; font-size: 12px; padding: 4px 12px; }
+    .p1-alert-item { display: flex; align-items: center; gap: var(--space-md); font-size: var(--text-base); color: var(--color-danger-hover); flex-wrap: wrap; }
+    .p1-alert-item button { background: var(--color-danger); color: var(--color-well); font-size: var(--text-sm); padding: var(--space-xs) var(--space-md); }
     body.p1-alert-active { animation: p1-pulse 1.2s infinite; }
     @keyframes p1-pulse {
       0%, 100% { box-shadow: inset 0 0 0 6px transparent; }
-      50% { box-shadow: inset 0 0 0 6px #ff5252; }
+      50% { box-shadow: inset 0 0 0 6px var(--color-danger); }
     }
     @media (prefers-reduced-motion: reduce) {
-      body.p1-alert-active { animation: none; box-shadow: inset 0 0 0 6px #ff5252; }
+      body.p1-alert-active { animation: none; box-shadow: inset 0 0 0 6px var(--color-danger); }
     }
 
     /* ── Monitor grid ── */
-    .monitor-toolbar { display: flex; gap: 8px; align-items: center; margin-bottom: 14px; }
+    .monitor-toolbar { display: flex; gap: var(--space-sm); align-items: center; margin-bottom: var(--space-lg); }
     #active-feed-bar {
-      background: #16213e; border-radius: 8px; padding: 12px 16px; margin-bottom: 14px;
-      display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 13px;
+      background: var(--color-surface); border-radius: var(--radius-md); padding: var(--space-md) var(--space-lg); margin-bottom: var(--space-lg);
+      display: flex; align-items: center; gap: var(--space-md); flex-wrap: wrap; font-size: var(--text-base);
     }
-    #active-feed-bar.flash { background: #f59e0b44; }
-    #active-feed-bar .session-open { color: #00e676; font-weight: bold; font-size: 12px; }
-    .btn-mark { background: #ff5252; color: #fff; }
-    .btn-mark:hover { background: #ff8a80; }
-    .monitor-grid { display: grid; gap: 10px; }
+    #active-feed-bar.flash { background: var(--color-warning-subtle); }
+    #active-feed-bar .session-open { color: var(--color-success); font-weight: var(--font-weight-bold); font-size: var(--text-sm); }
+    .btn-mark { background: var(--color-danger); color: var(--color-well); }
+    .btn-mark:hover { background: var(--color-danger-hover); }
+    .monitor-grid { display: grid; gap: var(--space-md); }
     .monitor-grid.layout-1 { grid-template-columns: 1fr; }
     .monitor-grid.layout-2x1 { grid-template-columns: 1fr 1fr; }
     .monitor-grid.layout-2x2 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
@@ -99,32 +100,32 @@
     .monitor-grid.layout-1-3 .feed-cell[data-pos="small2"] { grid-column: 2; grid-row: 2; }
     .monitor-grid.layout-1-3 .feed-cell[data-pos="small3"] { grid-column: 2; grid-row: 3; }
     .feed-cell {
-      background: #000; border-radius: 10px; border: 3px solid #333; overflow: hidden;
+      background: var(--color-well); border-radius: var(--radius-lg); border: 3px solid var(--color-border); overflow: hidden;
       display: flex; flex-direction: column; cursor: pointer; position: relative;
     }
-    .feed-cell.active-feed { border-color: #f59e0b; }
-    .feed-cell video { width: 100%; aspect-ratio: 16/9; background: #000; display: block; flex: 1; min-height: 0; }
+    .feed-cell.active-feed { border-color: var(--color-brand); }
+    .feed-cell video { width: 100%; aspect-ratio: 16/9; background: var(--color-well); display: block; flex: 1; min-height: 0; }
     .feed-cell:fullscreen video, .feed-cell.cell-fullscreen video { aspect-ratio: auto; object-fit: contain; }
     .feed-nosignal-overlay {
       position: absolute; inset: 0; bottom: 40px; display: none; align-items: center; justify-content: center;
-      background: rgba(0,0,0,0.7); color: #ff5252; font-weight: bold; font-size: 15px; letter-spacing: 1.5px;
+      background: color-mix(in srgb, var(--color-well) 70%, transparent); color: var(--color-danger); font-weight: var(--font-weight-bold); font-size: var(--text-md); letter-spacing: 1.5px;
       pointer-events: none;
     }
     .feed-cell-bar {
-      display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: #16213e; font-size: 12px;
+      display: flex; align-items: center; gap: var(--space-sm); padding: var(--space-sm) var(--space-md); background: var(--color-surface); font-size: var(--text-sm);
     }
     /* Feed picker shrinks to whatever's left after the VU meter claims its
        (at least) one-third share below -- min-width:0 lets a flex item
        actually shrink past its content size instead of overflowing, and
        text-overflow gives the truncated stream name a visual cue. */
     .feed-cell-bar select.feed-picker {
-      flex: 1 1 0; min-width: 0; font-size: 11px; padding: 4px 6px;
+      flex: 1 1 0; min-width: 0; font-size: var(--text-xs); padding: var(--space-xs) var(--space-sm);
       text-overflow: ellipsis; white-space: nowrap; overflow: hidden;
     }
-    .feed-session-badge { font-size: 10px; color: #94a3b8; flex: 0 0 auto; }
-    .feed-session-badge.open { color: #00e676; font-weight: bold; }
-    .feed-mute-btn, .feed-fullscreen-btn { background: transparent; color: #e0e0e0; padding: 2px 6px; font-size: 14px; flex: 0 0 auto; }
-    .feed-p1-badge { background: #ff5252; color: #fff; border-radius: 8px; padding: 0 5px; font-weight: bold; margin-left: 4px; }
+    .feed-session-badge { font-size: var(--text-2xs); color: var(--color-text-muted); flex: 0 0 auto; }
+    .feed-session-badge.open { color: var(--color-success); font-weight: var(--font-weight-bold); }
+    .feed-mute-btn, .feed-fullscreen-btn { background: transparent; color: var(--color-text); padding: var(--space-2xs) var(--space-sm); font-size: var(--text-base); flex: 0 0 auto; }
+    .feed-p1-badge { background: var(--color-danger); color: var(--color-well); border-radius: var(--radius-md); padding: 0 var(--space-xs); font-weight: var(--font-weight-bold); margin-left: var(--space-xs); }
     /* Per-feed incoming-audio VU meter -- stereo L/R, two horizontal
        segmented-LED rows (see setupCellVuMeter/startVuMeterLoop in qc.js --
        the main program audio is a genuinely 2-channel source, unlike the
@@ -134,102 +135,241 @@
        above. Taller (26px vs the old 16px) now that there's more room, for
        better visibility. */
     .feed-vu-meter {
-      display: flex; flex-direction: column; gap: 2px; flex: 0 0 34%; width: auto; height: 26px;
-      background: rgba(0,0,0,0.3); border-radius: 3px; padding: 2px; box-sizing: border-box;
+      display: flex; flex-direction: column; gap: var(--space-2xs); flex: 0 0 34%; width: auto; height: 26px;
+      background: var(--color-well); border-radius: var(--radius-sm); padding: var(--space-2xs); box-sizing: border-box;
     }
-    .feed-vu-row { display: flex; flex-direction: row; gap: 1px; flex: 1; }
-    .vu-segment { flex: 1; border-radius: 1px; background: rgba(255,255,255,0.08); }
-    .vu-segment.lit-green { background: #00e676; }
-    .vu-segment.lit-orange { background: #ffab40; }
-    .vu-segment.lit-red { background: #ff5252; }
+    .feed-vu-row { display: flex; flex-direction: row; gap: var(--space-2xs); flex: 1; }
+    .vu-segment { flex: 1; border-radius: var(--radius-sm); background: var(--color-border); }
+    .vu-segment.lit-green { background: var(--color-success); }
+    .vu-segment.lit-orange { background: var(--color-warning); }
+    .vu-segment.lit-red { background: var(--color-danger); }
 
     /* ── Incidents tab ── */
-    .filters-bar { display: flex; gap: 8px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; }
+    .filters-bar { display: flex; gap: var(--space-sm); align-items: center; margin-bottom: var(--space-lg); flex-wrap: wrap; }
     .incident-item {
-      background: #16213e; border: 1px solid #333; border-left: 4px solid #334155;
-      border-radius: 8px; padding: 12px 14px; margin-bottom: 10px;
+      background: var(--color-surface); border: 1px solid var(--color-border); border-left: 4px solid var(--color-border-strong);
+      border-radius: var(--radius-md); padding: var(--space-md) var(--space-lg); margin-bottom: var(--space-md);
     }
-    .incident-item.P1 { border-left-color: #ff5252; }
-    .incident-item.P2 { border-left-color: #f59e0b; }
-    .incident-item.P3 { border-left-color: #666680; }
+    .incident-item.P1 { border-left-color: var(--color-danger); }
+    .incident-item.P2 { border-left-color: var(--color-warning); }
+    .incident-item.P3 { border-left-color: var(--color-text-muted); }
     .incident-item.voided { opacity: 0.55; }
     .incident-item.pending { border-left-style: dashed; }
-    .incident-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .incident-sev-badge { font-size: 11px; font-weight: bold; padding: 2px 8px; border-radius: 4px; color: #1a1a2e; }
-    .incident-sev-badge.P1 { background: #ff5252; }
-    .incident-sev-badge.P2 { background: #f59e0b; }
-    .incident-sev-badge.P3 { background: #666680; color: #fff; }
-    .incident-status { font-size: 11px; color: #94a3b8; }
-    .pending-tag { font-size: 11px; color: #f59e0b; font-weight: bold; }
-    .voided-tag { font-size: 11px; color: #ff5252; font-weight: bold; }
-    .incident-cat { font-size: 11px; color: #00c9db; margin-top: 4px; }
-    .incident-desc { font-size: 13px; margin-top: 6px; }
-    .incident-meta { font-size: 11px; color: #94a3b8; margin-top: 6px; }
-    .incident-actions { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; align-items: center; }
-    .incident-actions select { font-size: 11px; padding: 4px 6px; }
-    .incident-actions button { font-size: 11px; padding: 4px 10px; }
-    .empty-hint { text-align: center; padding: 2rem; color: #666680; font-size: 0.85rem; }
+    .incident-top { display: flex; align-items: center; gap: var(--space-sm); flex-wrap: wrap; }
+    .incident-sev-badge { font-size: var(--text-xs); font-weight: var(--font-weight-bold); padding: var(--space-2xs) var(--space-sm); border-radius: var(--radius-sm); color: var(--color-bg); }
+    .incident-sev-badge.P1 { background: var(--color-danger); }
+    .incident-sev-badge.P2 { background: var(--color-warning); }
+    .incident-sev-badge.P3 { background: var(--color-text-muted); color: var(--color-text); }
+    .incident-status { font-size: var(--text-xs); color: var(--color-text-muted); }
+    .pending-tag { font-size: var(--text-xs); color: var(--color-warning); font-weight: var(--font-weight-bold); }
+    .voided-tag { font-size: var(--text-xs); color: var(--color-danger); font-weight: var(--font-weight-bold); }
+    .incident-cat { font-size: var(--text-xs); color: var(--color-info); margin-top: var(--space-xs); }
+    .incident-desc { font-size: var(--text-base); margin-top: var(--space-sm); }
+    .incident-meta { font-size: var(--text-xs); color: var(--color-text-muted); margin-top: var(--space-sm); }
+    .incident-actions { display: flex; gap: var(--space-sm); margin-top: var(--space-md); flex-wrap: wrap; align-items: center; }
+    .incident-actions select { font-size: var(--text-xs); padding: var(--space-xs) var(--space-sm); }
+    .incident-actions button { font-size: var(--text-xs); padding: var(--space-xs) var(--space-md); }
+    .empty-hint { text-align: center; padding: var(--space-2xl); color: var(--color-text-muted); font-size: var(--text-base); }
 
-    #sessions-table-wrap { margin-top: 24px; }
-    .report-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
-    .report-table th, .report-table td { padding: 6px 8px; border-bottom: 1px solid #333; text-align: left; }
+    #sessions-table-wrap { margin-top: var(--space-xl); }
+    .report-table { width: 100%; border-collapse: collapse; margin-top: var(--space-md); font-size: var(--text-sm); }
+    .report-table th, .report-table td { padding: var(--space-sm) var(--space-sm); border-bottom: 1px solid var(--color-border); text-align: left; }
     .report-table tr.voided { opacity: 0.5; }
-    .session-notes-ro { font-size: 11px; color: #94a3b8; margin: 4px 0 8px 14px; }
+    .session-notes-ro { font-size: var(--text-xs); color: var(--color-text-muted); margin: var(--space-xs) 0 var(--space-sm) var(--space-lg); }
 
     /* ── "Ver como" (view-as) role preview (#28) ── */
     #view-as-banner {
-      display: none; align-items: center; gap: 10px; background: #0d3a2e; border-bottom: 2px solid #00e676;
-      padding: 8px 20px; font-size: 12px; color: #8df5c2;
+      display: none; align-items: center; gap: var(--space-md); background: var(--color-info-subtle); border-bottom: 2px solid var(--color-success);
+      padding: var(--space-sm) var(--space-xl); font-size: var(--text-sm); color: var(--color-info);
     }
-    #view-as-banner button { background: #00e676; color: #0d3a2e; font-size: 11px; padding: 4px 10px; }
+    #view-as-banner button { background: var(--color-success); color: var(--color-info-subtle); font-size: var(--text-xs); padding: var(--space-xs) var(--space-md); }
 
     /* ── Users tab ── */
     .qc-user-row {
-      display: flex; align-items: center; gap: 10px; padding: 8px; border-bottom: 1px solid #333; flex-wrap: wrap;
+      display: flex; align-items: center; gap: var(--space-md); padding: var(--space-sm); border-bottom: 1px solid var(--color-border); flex-wrap: wrap;
     }
-    .qc-user-name { flex: 1; font-weight: bold; min-width: 100px; }
-    .qc-user-flag { font-size: 11px; padding: 2px 8px; border-radius: 10px; background: #333; }
-    .qc-user-flag.active { background: #00e67633; color: #00e676; }
-    .qc-user-flag.inactive { background: #ff525233; color: #ff5252; }
-    #qc-create-user-form { display: none; background: #16213e; padding: 14px; border-radius: 8px; margin-bottom: 14px; }
-    #qc-create-user-form label { font-size: 11px; color: #94a3b8; display: block; margin: 8px 0 4px; }
+    .qc-user-name { flex: 1; font-weight: var(--font-weight-bold); min-width: 100px; }
+    .qc-user-flag { font-size: var(--text-xs); padding: var(--space-2xs) var(--space-sm); border-radius: var(--radius-lg); background: var(--color-border); }
+    .qc-user-flag.active { background: var(--color-success-subtle); color: var(--color-success); }
+    .qc-user-flag.inactive { background: var(--color-danger-subtle); color: var(--color-danger); }
+    #qc-create-user-form { display: none; background: var(--color-surface); padding: var(--space-lg); border-radius: var(--radius-md); margin-bottom: var(--space-lg); }
+    #qc-create-user-form label { font-size: var(--text-xs); color: var(--color-text-muted); display: block; margin: var(--space-sm) 0 var(--space-xs); }
 
     /* ── Modals / overlays ── */
     .modal-overlay {
-      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75);
-      align-items: center; justify-content: center; z-index: 1000; padding: 16px;
+      display: none; position: fixed; inset: 0; background: color-mix(in srgb, var(--color-well) 75%, transparent);
+      align-items: center; justify-content: center; z-index: 1000; padding: var(--space-lg);
     }
     .modal-overlay.active { display: flex; }
     .modal-card {
-      background: #16213e; border-radius: 12px; padding: 20px; width: 100%; max-width: 460px;
-      display: flex; flex-direction: column; gap: 12px; max-height: 90vh; overflow-y: auto;
+      background: var(--color-surface); border-radius: var(--radius-lg); padding: var(--space-xl); width: 100%; max-width: 460px;
+      display: flex; flex-direction: column; gap: var(--space-md); max-height: 90vh; overflow-y: auto;
     }
     .modal-card.wide { max-width: 720px; }
-    .modal-card img#describe-snapshot-preview { width: 100%; aspect-ratio: 16/9; object-fit: contain; background: #000; border-radius: 8px; }
+    .modal-card img#describe-snapshot-preview { width: 100%; aspect-ratio: 16/9; object-fit: contain; background: var(--color-well); border-radius: var(--radius-md); }
     .modal-card textarea { width: 100%; min-height: 80px; font-family: inherit; resize: vertical; }
-    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; }
-    #report-body h2 { color: #f59e0b; margin-bottom: 10px; }
-    #report-body h3 { margin-top: 16px; margin-bottom: 6px; font-size: 13px; color: #94a3b8; }
-    .report-summary { display: flex; gap: 20px; font-size: 13px; flex-wrap: wrap; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: var(--space-sm); }
+    #report-body h2 { color: var(--color-brand); margin-bottom: var(--space-md); }
+    #report-body h3 { margin-top: var(--space-lg); margin-bottom: var(--space-sm); font-size: var(--text-base); color: var(--color-text-muted); }
+    .report-summary { display: flex; gap: var(--space-xl); font-size: var(--text-base); flex-wrap: wrap; }
+
+    /* Quiet control-room chrome: selection is blue; urgency alone is red. */
+    html { color-scheme: dark; }
+    body { font-size: var(--text-base); line-height: var(--leading-normal); }
+    button, input, select, textarea { font-family: var(--font-sans); }
+    button, a, select, input[type=checkbox] {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: var(--color-select-subtle);
+    }
+    button { min-height: 36px; background: var(--color-surface-raised); color: var(--color-text); border: 1px solid var(--color-border-strong); }
+    button:hover { background: var(--color-border); }
+    button:active { background: var(--color-select); color: var(--color-well); }
+    :where(button, a, input, select, textarea, [tabindex]):focus-visible {
+      outline: 2px solid var(--color-info); outline-offset: 3px;
+    }
+    input, select, textarea { min-height: 36px; min-width: 0; max-width: 100%; }
+    input::placeholder, textarea::placeholder { color: var(--color-text-muted); opacity: 1; }
+    input[type=checkbox] { min-height: auto; accent-color: var(--color-select); }
+    h1, h2, h3 { line-height: var(--leading-tight); text-wrap: balance; }
+    h2 { font-size: var(--text-lg); }
+    a { color: var(--color-info); }
+    .skip-link { position: fixed; top: var(--space-sm); left: var(--space-sm); z-index: 2000; padding: var(--space-sm) var(--space-md); background: var(--color-surface); transform: translateY(-200%); }
+    .skip-link:focus-visible { transform: translateY(0); }
+    #login-screen, #pwchange-screen { min-height: 100svh; height: auto; padding: var(--space-xl); }
+    .auth-card { width: 400px; max-width: 100%; padding: var(--space-2xl); text-align: left; border: 1px solid var(--color-border); box-shadow: var(--shadow-lg); }
+    .auth-card h2 { color: var(--color-text); font-size: var(--text-2xl); margin-bottom: var(--space-sm); }
+    .auth-card p.sub { font-size: var(--text-base); line-height: var(--leading-normal); margin-bottom: var(--space-xl); }
+    .auth-card label { display: block; color: var(--color-text-muted); font-size: var(--text-sm); margin-top: var(--space-md); }
+    .auth-card input { padding: var(--space-md); }
+    .auth-card button, #qc-create-user-form .modal-actions button:last-child,
+    [onclick="showCreateQcUser()"], [onclick="submitDescribe()"] {
+      background: color-mix(in srgb, var(--color-brand) 90%, var(--color-well)); border-color: var(--color-brand-hover); color: var(--color-text);
+    }
+    .auth-card button:hover, [onclick="showCreateQcUser()"]:hover, [onclick="submitDescribe()"]:hover { background: var(--color-brand-hover); color: var(--color-well); }
+    .qc-header { flex-wrap: wrap; border-bottom: 1px solid var(--color-border); gap: var(--space-md); }
+    .qc-header h1 { color: var(--color-text); white-space: nowrap; }
+    .qc-header .qc-badge { background: var(--color-surface-raised); border: 1px solid var(--color-border-strong); color: var(--color-text-muted); font-size: var(--text-xs); }
+    .qc-header a.coms-link { color: var(--color-info); border-color: var(--color-border-strong); margin: 0; padding: var(--space-sm) var(--space-md); }
+    .qc-tabs { border-bottom: 1px solid var(--color-border); }
+    .qc-tab { border: 0; border-bottom: 3px solid transparent; }
+    .qc-tab.active { color: var(--color-text); background: var(--color-select-subtle); border-bottom-color: var(--color-select); }
+    .qc-tab:hover { color: var(--color-text); background: var(--color-surface-raised); }
+    .qc-tab-content { padding: var(--space-xl); min-width: 0; }
+    .monitor-toolbar { flex-wrap: wrap; gap: var(--space-xs); }
+    .monitor-toolbar > span { margin-right: var(--space-sm); }
+    .monitor-toolbar button { font-size: var(--text-sm); }
+    body:has(.layout-1) [onclick="setGridLayout('1')"],
+    body:has(.layout-2x1) [onclick="setGridLayout('2x1')"],
+    body:has(.layout-2x2) [onclick="setGridLayout('2x2')"],
+    body:has(.layout-1-3) [onclick="setGridLayout('1-3')"] {
+      background: var(--color-select); color: var(--color-well); border-color: var(--color-select);
+    }
+    #active-feed-bar { border: 1px solid var(--color-border); color: var(--color-text-muted); border-radius: var(--radius-sm); overflow-wrap: anywhere; }
+    #active-feed-bar strong { color: var(--color-text); }
+    .monitor-grid { gap: var(--space-md); grid-auto-rows: minmax(0, auto); }
+    .monitor-grid.layout-1 { grid-template-columns: minmax(0, 1fr); }
+    .monitor-grid.layout-2x1, .monitor-grid.layout-2x2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .monitor-grid.layout-1-3 { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
+    .monitor-grid.layout-1-3 { height: 68vh; grid-template-rows: repeat(3, minmax(0, 1fr)); }
+    .monitor-grid.layout-1-3 .feed-cell video { aspect-ratio: auto; }
+    .feed-cell { min-width: 0; border-width: 1px; border-color: var(--color-border); border-radius: var(--radius-sm); }
+    .feed-cell.active-feed { border-color: var(--color-select); box-shadow: inset 0 0 0 1px var(--color-select); }
+    .feed-cell video { object-fit: contain; width: 100%; max-height: 68vh; }
+    .feed-cell-bar { position: relative; z-index: 1; flex-shrink: 0; flex-wrap: wrap; padding: var(--space-sm); gap: var(--space-sm); border-top: 1px solid var(--color-border); }
+    .feed-cell-bar select.feed-picker { flex-basis: 30%; min-width: 80px; }
+    .feed-session-badge { font-size: var(--text-xs); overflow-wrap: anywhere; flex-shrink: 1; }
+    .feed-vu-meter { flex-basis: 34%; min-width: 60px; }
+    .feed-mute-btn, .feed-fullscreen-btn { min-width: 32px; border-color: transparent; }
+    .feed-nosignal-overlay { color: var(--color-danger); font-size: var(--text-md); letter-spacing: normal; bottom: 54px; }
+    button.btn-danger, .btn-mark, .p1-alert-item button { background: var(--color-danger); color: var(--color-well); border-color: var(--color-danger); }
+    button.btn-danger:hover, .btn-mark:hover, .p1-alert-item button:hover { background: var(--color-danger-hover); color: var(--color-well); }
+    #pending-badge, .feed-p1-badge { color: var(--color-well); font-variant-numeric: tabular-nums; }
+    #p1-alert-banner { background: var(--color-bg); border-left: 4px solid var(--color-danger); box-shadow: var(--shadow-md); }
+    .p1-alert-item { color: var(--color-text); overflow-wrap: anywhere; }
+    .p1-alert-item > strong { color: var(--color-danger); }
+    #view-as-banner { background: var(--color-info-subtle); border-bottom: 1px solid var(--color-info); color: var(--color-info); flex-wrap: wrap; }
+    #view-as-banner button { background: var(--color-surface); color: var(--color-info); border-color: var(--color-info); }
+    .filters-bar { padding-bottom: var(--space-lg); border-bottom: 1px solid var(--color-border); }
+    .filters-bar label { display: inline-flex; align-items: center; gap: var(--space-xs); min-height: 36px; }
+    .incident-item { border-radius: var(--radius-sm); padding: var(--space-lg); }
+    .incident-body, .incident-top strong { min-width: 0; overflow-wrap: anywhere; }
+    .incident-item.voided, .report-table tr.voided { opacity: 1; color: var(--color-text-muted); }
+    .incident-desc { font-size: var(--text-md); line-height: var(--leading-normal); max-width: 80ch; overflow-wrap: anywhere; }
+    .incident-meta { font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+    .incident-timecode { font-family: var(--font-mono); }
+    .incident-sev-badge { color: var(--color-well); }
+    .incident-sev-badge.P3 { color: var(--color-bg); background: var(--color-text-muted); }
+    .incident-actions button, .incident-actions select { min-height: 32px; font-size: var(--text-sm); }
+    .empty-hint { border: 1px dashed var(--color-border-strong); border-radius: var(--radius-sm); padding: var(--space-2xl); color: var(--color-text-muted); }
+    #sessions-table, #audit-log-table { max-width: 100%; overflow-x: auto; }
+    .report-table { table-layout: fixed; line-height: var(--leading-normal); font-variant-numeric: tabular-nums; }
+    .report-table th, .report-table td { vertical-align: top; overflow-wrap: anywhere; padding: var(--space-md) var(--space-sm); }
+    #report-body .report-table td:first-child, #audit-log-table .report-table td:first-child { font-family: var(--font-mono); }
+    .report-table th { color: var(--color-text-muted); font-weight: var(--font-weight-medium); background: var(--color-surface); }
+    .report-table td button { margin-bottom: var(--space-xs); }
+    .report-table tbody tr:hover { background: var(--color-surface-raised); }
+    #tab-users > div:first-child, #tab-users > div:first-child > div { flex-wrap: wrap; gap: var(--space-md); }
+    .qc-user-row { padding: var(--space-lg) 0; gap: var(--space-sm); }
+    .qc-user-name { overflow-wrap: anywhere; }
+    .qc-user-flag { color: var(--color-text-muted); border-radius: var(--radius-sm); background: var(--color-surface-raised); }
+    #qc-create-user-form { border: 1px solid var(--color-border); max-width: 600px; padding: var(--space-xl); }
+    #qc-create-user-form > input[type=text], #qc-create-user-form > select { width: 100%; }
+    .modal-overlay { padding: max(var(--space-lg), env(safe-area-inset-top)) var(--space-lg); }
+    .modal-card { border: 1px solid var(--color-border-strong); box-shadow: var(--shadow-lg); overscroll-behavior: contain; max-height: calc(100svh - var(--space-2xl)); min-width: 0; padding: var(--space-xl); }
+    .modal-card h3 { font-size: var(--text-lg); }
+    .modal-card h2 { font-size: var(--text-lg); }
+    .modal-card img#describe-snapshot-preview { height: auto; }
+    .modal-card img#describe-snapshot-preview[src=""] { display: none; }
+    .modal-card textarea { font-size: var(--text-md); line-height: var(--leading-normal); }
+    .modal-actions { flex-wrap: wrap; align-items: center; }
+    #report-body { min-width: 0; overflow-wrap: anywhere; }
+    #report-body h2 { color: var(--color-text); font-size: var(--text-xl); }
+    #report-body ul { padding-left: var(--space-lg); }
+    .report-summary { gap: var(--space-md); padding: var(--space-md) 0; border-bottom: 1px solid var(--color-border); }
+    @media (max-width: 700px) {
+      .qc-header { padding: var(--space-md); gap: var(--space-sm); }
+      .qc-header .spacer { flex-basis: 20%; }
+      .qc-header #view-as-select { flex: 1 1 100%; max-width: 100%; }
+      .qc-tabs { padding: 0 var(--space-md); }
+      .qc-tab { padding: var(--space-md); }
+      .qc-tab-content { padding: var(--space-md); }
+      .monitor-grid.layout-2x1, .monitor-grid.layout-2x2, .monitor-grid.layout-1-3 { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; }
+      .monitor-grid.layout-1-3 { height: auto; }
+      .monitor-grid.layout-1-3 .feed-cell video { aspect-ratio: 16/9; }
+      .monitor-grid.layout-1-3 .feed-cell[data-pos] { grid-column: auto; grid-row: auto; }
+      .monitor-grid.layout-1-3 .feed-cell[data-pos="big"] { order: -1; }
+      .filters-bar > select { flex: 1 1 100%; width: 100%; }
+      .qc-user-row select { flex: 1 1 100%; }
+      .auth-card { padding: var(--space-xl); }
+      .modal-card { padding: var(--space-lg); }
+      .modal-actions > button { flex: 1 1 auto; }
+      #report-body .report-table { font-size: var(--text-xs); }
+      #report-body .report-table th, #report-body .report-table td { padding: var(--space-sm) var(--space-2xs); }
+      #sessions-table .report-table th, #sessions-table .report-table td { padding: var(--space-sm) var(--space-xs); }
+      .report-table td button { padding: var(--space-sm) var(--space-xs); font-size: var(--text-xs); white-space: nowrap; }
+    }
 
     @media print {
       .qc-header, .qc-tabs, .modal-actions, #report-export-csv, #report-print, #p1-alert-banner { display: none !important; }
-      body { background: #fff; color: #000; }
+      body { background: var(--color-bg); color: var(--color-text); }
       .modal-overlay { position: static; background: none; }
-      .modal-card { background: #fff; color: #000; box-shadow: none; max-height: none; }
-      .report-table th, .report-table td { border-color: #ccc; }
+      .modal-card { background: var(--color-surface); color: var(--color-text); box-shadow: none; max-height: none; }
+      .report-table th, .report-table td { border-color: var(--color-border); }
     }
   </style>
 </head>
 <body>
+  <a class="skip-link" href="#main-screen">Ir al contenido</a>
   <!-- Login -->
   <div id="login-screen">
     <div class="auth-card">
       <h2>QC Editorial</h2>
       <p class="sub" data-i18n="loginSub">Control de calidad editorial</p>
-      <input id="login-user" type="text" data-i18n-placeholder="loginUser" placeholder="Usuario">
-      <input id="login-pass" type="password" data-i18n-placeholder="loginPass" placeholder="Contraseña" onkeydown="if(event.key==='Enter')doLogin()">
-      <div id="login-error" class="auth-error"></div>
+<label for="login-user" data-i18n="loginUser">Usuario</label>
+      <input id="login-user" spellcheck="false" name="login-user" autocomplete="username" aria-label="Usuario" type="text" data-i18n-placeholder="loginUser" placeholder="Usuario">
+<label for="login-pass" data-i18n="loginPass">Contraseña</label>
+      <input id="login-pass" name="login-pass" autocomplete="current-password" aria-label="Contraseña" type="password" data-i18n-placeholder="loginPass" placeholder="Contraseña" onkeydown="if(event.key==='Enter')doLogin()">
+      <div id="login-error" aria-live="polite" class="auth-error"></div>
       <button onclick="doLogin()" data-i18n="loginEnter">Entrar en la estación QC</button>
     </div>
   </div>
@@ -239,28 +379,31 @@
     <div class="auth-card">
       <h2 data-i18n="changePwTitle">Define tu contraseña</h2>
       <p class="sub" data-i18n="changePwHint">La contraseña provisional solo sirve para la primera entrada. Elige una nueva.</p>
-      <input id="pwchange-current" type="password" data-i18n-placeholder="pwCurrent" placeholder="Contraseña provisional">
-      <input id="pwchange-new" type="password" data-i18n-placeholder="pwNew" placeholder="Nueva contraseña (mín. 10, letras y números)">
-      <input id="pwchange-confirm" type="password" data-i18n-placeholder="pwRepeat" placeholder="Repetir contraseña">
-      <div id="pwchange-error" class="auth-error"></div>
+<label for="pwchange-current" data-i18n="pwCurrent">Contraseña provisional</label>
+      <input id="pwchange-current" name="pwchange-current" autocomplete="current-password" aria-label="Contraseña provisional" type="password" data-i18n-placeholder="pwCurrent" placeholder="Contraseña provisional">
+<label for="pwchange-new" data-i18n="pwNew">Nueva contraseña (mín. 10, letras y números)</label>
+      <input id="pwchange-new" name="pwchange-new" autocomplete="new-password" aria-label="Nueva contraseña (mínimo 10 caracteres, letras y números)" type="password" data-i18n-placeholder="pwNew" placeholder="Nueva contraseña (mín. 10, letras y números)">
+<label for="pwchange-confirm" data-i18n="pwRepeat">Repetir contraseña</label>
+      <input id="pwchange-confirm" name="pwchange-confirm" autocomplete="new-password" aria-label="Repetir contraseña" type="password" data-i18n-placeholder="pwRepeat" placeholder="Repetir contraseña">
+      <div id="pwchange-error" aria-live="polite" class="auth-error"></div>
       <button onclick="submitPasswordChange()" data-i18n="save">Guardar</button>
     </div>
   </div>
 
   <!-- Main app -->
-  <div id="main-screen">
+  <div id="main-screen" role="main" tabindex="-1">
     <div class="qc-header">
       <h1>QC Editorial</h1>
       <span class="qc-badge">LIVE</span>
       <span class="spacer"></span>
-      <span id="qc-username" style="font-size:12px; color:#94a3b8;"></span>
-      <select id="lang-select" onchange="setLang(this.value)" title="Idioma">
+      <span id="qc-username" style="font-size:var(--text-sm); color:var(--color-text-muted);"></span>
+      <select id="lang-select" aria-label="Idioma" onchange="setLang(this.value)" title="Idioma">
         <option value="es">ES</option>
         <option value="pt">PT</option>
         <option value="en">EN</option>
       </select>
       <a class="coms-link" href="/index.html" data-i18n="comsLink">↔ Coms</a>
-      <select id="view-as-select" onchange="setPreviewRole(this.value)" style="display:none;" data-i18n-title="viewAsLabel" title="Ver como">
+      <select id="view-as-select" aria-label="Ver como" onchange="setPreviewRole(this.value)" style="display:none;" data-i18n-title="viewAsLabel" title="Ver como">
         <option value="" data-i18n="viewAsReal">— Mi rol real —</option>
         <option value="qc_engineer">qc_engineer</option>
         <option value="qc_coordinator">qc_coordinator</option>
@@ -268,7 +411,7 @@
         <option value="qc_auditor">qc_auditor</option>
       </select>
       <button id="btn-close-day" onclick="closeTheDay()" style="display:none;" data-i18n="closeDay">Cerrar el día</button>
-      <button onclick="logout()" style="background:#ff5252; color:#fff;" data-i18n="logout">Salir</button>
+      <button onclick="logout()" style="background:var(--color-danger); color:var(--color-well);" data-i18n="logout">Salir</button>
     </div>
 
     <!-- "Ver como" preview banner (#28) -- populated by renderViewAsBanner() -->
@@ -276,18 +419,18 @@
 
     <!-- P1 on-screen alert (urgent #1) -- populated live by addP1Alert() in
          qc.js, never from historical data. -->
-    <div id="p1-alert-banner"></div>
+    <div id="p1-alert-banner" role="alert"></div>
 
     <div class="qc-tabs">
       <button class="qc-tab active" data-tab="monitor" onclick="showTab('monitor')" data-i18n="navMonitor">Monitor</button>
-      <button class="qc-tab" data-tab="incidents" onclick="showTab('incidents')"><span data-i18n="navIncidents">Incidencias</span> <span id="pending-badge"></span></button>
+      <button class="qc-tab" data-tab="incidents" onclick="showTab('incidents')"><span data-i18n="navIncidents">Incidencias</span> <span id="pending-badge" aria-live="polite"></span></button>
       <button class="qc-tab" id="nav-users" data-tab="users" onclick="showTab('users')" style="display:none;" data-i18n="navUsers">Usuarios</button>
     </div>
 
     <!-- Monitor tab -->
     <div class="qc-tab-content active" id="tab-monitor">
       <div class="monitor-toolbar">
-        <span style="font-size:12px; color:#94a3b8;" data-i18n="viewLabel">Vista:</span>
+        <span style="font-size:var(--text-sm); color:var(--color-text-muted);" data-i18n="viewLabel">Vista:</span>
         <button onclick="setGridLayout('1')" data-i18n="layout1">1 feed</button>
         <button onclick="setGridLayout('2x1')" data-i18n="layout2">2 feeds</button>
         <button onclick="setGridLayout('2x2')" data-i18n="layout4">4 feeds</button>
@@ -299,56 +442,56 @@
           <video id="feed-video-0" autoplay muted playsinline ondblclick="event.stopPropagation(); toggleCellFullscreen(0)"></video>
           <div id="feed-nosignal-0" class="feed-nosignal-overlay" data-i18n="noSignal">SIN SEÑAL</div>
         <div class="feed-cell-bar">
-            <select class="feed-picker" data-cell="0" onclick="event.stopPropagation()" onchange="onFeedPicked(0, this.value)"></select>
+            <select class="feed-picker" aria-label="Seleccionar feed" data-cell="0" onclick="event.stopPropagation()" onchange="onFeedPicked(0, this.value)"></select>
             <span id="feed-session-0" class="feed-session-badge"></span>
             <div id="feed-vu-0" class="feed-vu-meter" data-i18n-title="muteTooltip" title="Nivel de audio entrante (L/R)">
               <div id="feed-vu-0-l" class="feed-vu-row"></div>
               <div id="feed-vu-0-r" class="feed-vu-row"></div>
             </div>
-            <button id="feed-mute-0" class="feed-mute-btn" onclick="event.stopPropagation(); toggleCellAudio(0)">🔊</button>
-            <button class="feed-fullscreen-btn" data-i18n-title="fullscreenTooltip" onclick="event.stopPropagation(); toggleCellFullscreen(0)">⛶</button>
+            <button id="feed-mute-0" class="feed-mute-btn" aria-label="Activar o silenciar audio" onclick="event.stopPropagation(); toggleCellAudio(0)">🔊</button>
+            <button class="feed-fullscreen-btn" aria-label="Pantalla completa" data-i18n-title="fullscreenTooltip" onclick="event.stopPropagation(); toggleCellFullscreen(0)">⛶</button>
           </div>
         </div>
         <div class="feed-cell" id="feed-cell-1" onclick="setActiveCell(1)" style="display:none;">
           <video id="feed-video-1" autoplay muted playsinline ondblclick="event.stopPropagation(); toggleCellFullscreen(1)"></video>
           <div id="feed-nosignal-1" class="feed-nosignal-overlay" data-i18n="noSignal">SIN SEÑAL</div>
         <div class="feed-cell-bar">
-            <select class="feed-picker" data-cell="1" onclick="event.stopPropagation()" onchange="onFeedPicked(1, this.value)"></select>
+            <select class="feed-picker" aria-label="Seleccionar feed" data-cell="1" onclick="event.stopPropagation()" onchange="onFeedPicked(1, this.value)"></select>
             <span id="feed-session-1" class="feed-session-badge"></span>
             <div id="feed-vu-1" class="feed-vu-meter" data-i18n-title="muteTooltip" title="Nivel de audio entrante (L/R)">
               <div id="feed-vu-1-l" class="feed-vu-row"></div>
               <div id="feed-vu-1-r" class="feed-vu-row"></div>
             </div>
-            <button id="feed-mute-1" class="feed-mute-btn" onclick="event.stopPropagation(); toggleCellAudio(1)">🔇</button>
-            <button class="feed-fullscreen-btn" data-i18n-title="fullscreenTooltip" onclick="event.stopPropagation(); toggleCellFullscreen(1)">⛶</button>
+            <button id="feed-mute-1" class="feed-mute-btn" aria-label="Activar o silenciar audio" onclick="event.stopPropagation(); toggleCellAudio(1)">🔇</button>
+            <button class="feed-fullscreen-btn" aria-label="Pantalla completa" data-i18n-title="fullscreenTooltip" onclick="event.stopPropagation(); toggleCellFullscreen(1)">⛶</button>
           </div>
         </div>
         <div class="feed-cell" id="feed-cell-2" onclick="setActiveCell(2)" style="display:none;">
           <video id="feed-video-2" autoplay muted playsinline ondblclick="event.stopPropagation(); toggleCellFullscreen(2)"></video>
           <div id="feed-nosignal-2" class="feed-nosignal-overlay" data-i18n="noSignal">SIN SEÑAL</div>
         <div class="feed-cell-bar">
-            <select class="feed-picker" data-cell="2" onclick="event.stopPropagation()" onchange="onFeedPicked(2, this.value)"></select>
+            <select class="feed-picker" aria-label="Seleccionar feed" data-cell="2" onclick="event.stopPropagation()" onchange="onFeedPicked(2, this.value)"></select>
             <span id="feed-session-2" class="feed-session-badge"></span>
             <div id="feed-vu-2" class="feed-vu-meter" data-i18n-title="muteTooltip" title="Nivel de audio entrante (L/R)">
               <div id="feed-vu-2-l" class="feed-vu-row"></div>
               <div id="feed-vu-2-r" class="feed-vu-row"></div>
             </div>
-            <button id="feed-mute-2" class="feed-mute-btn" onclick="event.stopPropagation(); toggleCellAudio(2)">🔇</button>
-            <button class="feed-fullscreen-btn" data-i18n-title="fullscreenTooltip" onclick="event.stopPropagation(); toggleCellFullscreen(2)">⛶</button>
+            <button id="feed-mute-2" class="feed-mute-btn" aria-label="Activar o silenciar audio" onclick="event.stopPropagation(); toggleCellAudio(2)">🔇</button>
+            <button class="feed-fullscreen-btn" aria-label="Pantalla completa" data-i18n-title="fullscreenTooltip" onclick="event.stopPropagation(); toggleCellFullscreen(2)">⛶</button>
           </div>
         </div>
         <div class="feed-cell" id="feed-cell-3" onclick="setActiveCell(3)" style="display:none;">
           <video id="feed-video-3" autoplay muted playsinline ondblclick="event.stopPropagation(); toggleCellFullscreen(3)"></video>
           <div id="feed-nosignal-3" class="feed-nosignal-overlay" data-i18n="noSignal">SIN SEÑAL</div>
         <div class="feed-cell-bar">
-            <select class="feed-picker" data-cell="3" onclick="event.stopPropagation()" onchange="onFeedPicked(3, this.value)"></select>
+            <select class="feed-picker" aria-label="Seleccionar feed" data-cell="3" onclick="event.stopPropagation()" onchange="onFeedPicked(3, this.value)"></select>
             <span id="feed-session-3" class="feed-session-badge"></span>
             <div id="feed-vu-3" class="feed-vu-meter" data-i18n-title="muteTooltip" title="Nivel de audio entrante (L/R)">
               <div id="feed-vu-3-l" class="feed-vu-row"></div>
               <div id="feed-vu-3-r" class="feed-vu-row"></div>
             </div>
-            <button id="feed-mute-3" class="feed-mute-btn" onclick="event.stopPropagation(); toggleCellAudio(3)">🔇</button>
-            <button class="feed-fullscreen-btn" data-i18n-title="fullscreenTooltip" onclick="event.stopPropagation(); toggleCellFullscreen(3)">⛶</button>
+            <button id="feed-mute-3" class="feed-mute-btn" aria-label="Activar o silenciar audio" onclick="event.stopPropagation(); toggleCellAudio(3)">🔇</button>
+            <button class="feed-fullscreen-btn" aria-label="Pantalla completa" data-i18n-title="fullscreenTooltip" onclick="event.stopPropagation(); toggleCellFullscreen(3)">⛶</button>
           </div>
         </div>
       </div>
@@ -361,26 +504,26 @@
     <!-- Incidents tab -->
     <div class="qc-tab-content" id="tab-incidents">
       <div class="filters-bar">
-        <select onchange="setIncidentsFilter({status: this.value})">
+        <select aria-label="Estado de incidencia" onchange="setIncidentsFilter({status: this.value})">
           <option value="" data-i18n="statusAll">Todos los estados</option>
           <option value="open" data-i18n="statusOpen">Abierta</option>
           <option value="in_review" data-i18n="stInAnalysis">En análisis</option>
           <option value="notified" data-i18n="stNotified">Notificado a la venue</option>
           <option value="resolved" data-i18n="stResolved">Resuelto</option>
         </select>
-        <select onchange="setIncidentsFilter({severity: this.value})">
+        <select aria-label="Severidad de incidencia" onchange="setIncidentsFilter({severity: this.value})">
           <option value="" data-i18n="severityAll">Todas las severidades</option>
           <option value="P1">P1</option>
           <option value="P2">P2</option>
           <option value="P3">P3</option>
         </select>
-        <select id="operator-filter" onchange="setIncidentsFilter({operatorUsername: this.value})">
+        <select id="operator-filter" aria-label="Operador" onchange="setIncidentsFilter({operatorUsername: this.value})">
           <option value="" data-i18n="operatorAll">Todos los operadores</option>
         </select>
-        <label style="font-size:12px; color:#94a3b8;">
+        <label style="font-size:var(--text-sm); color:var(--color-text-muted);">
           <input type="checkbox" onchange="setIncidentsFilter({includeVoided: this.checked})"> <span data-i18n="showVoided">Mostrar anuladas</span>
         </label>
-        <label style="font-size:12px; color:#94a3b8;">
+        <label style="font-size:var(--text-sm); color:var(--color-text-muted);">
           <input type="checkbox" onchange="setIncidentsFilter({pendingOnly: this.checked})"> <span data-i18n="pendingOnlyFilter">Solo por describir</span>
         </label>
         <button onclick="openDayReport()" data-i18n="dayReport">Informe del día</button>
@@ -388,8 +531,8 @@
       <div id="incidents-list"></div>
 
       <div id="sessions-table-wrap">
-        <h3 style="margin-bottom:10px; color:#94a3b8; font-size:13px;" data-i18n="sessionsByFeed">Sesiones por feed</h3>
-        <label style="font-size:12px; color:#94a3b8;">
+        <h2 style="margin-bottom:var(--space-md); color:var(--color-text-muted); font-size:var(--text-base);" data-i18n="sessionsByFeed">Sesiones por feed</h2>
+        <label style="font-size:var(--text-sm); color:var(--color-text-muted);">
           <input id="sessions-show-archive" type="checkbox" onchange="loadSessionsTable()"> <span data-i18n="showArchive">Mostrar sesiones cerradas</span>
         </label>
         <div id="sessions-table"></div>
@@ -398,32 +541,32 @@
 
     <!-- Users tab (qc_supervisor+) -->
     <div class="qc-tab-content" id="tab-users">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-        <h3 data-i18n="usersTitle">Gestión de usuarios QC</h3>
-        <div style="display:flex; gap:8px;">
-          <button onclick="deactivateTempUsers()" style="background:#666; color:#fff;" data-i18n="deactivateTemp">Desactivar temporales</button>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:var(--space-lg);">
+        <h2 data-i18n="usersTitle">Gestión de usuarios QC</h2>
+        <div style="display:flex; gap:var(--space-sm);">
+          <button onclick="deactivateTempUsers()" style="background:var(--color-surface-raised); color:var(--color-text);" data-i18n="deactivateTemp">Desactivar temporales</button>
           <button onclick="showCreateQcUser()" data-i18n="createUser">+ Nuevo usuario</button>
         </div>
       </div>
       <div id="qc-create-user-form">
-        <label data-i18n="username">Usuario</label>
-        <input id="qc-new-username" type="text" placeholder="nombre.apellido">
-        <label data-i18n="role">Rol</label>
-        <select id="qc-new-role">
+        <label for="qc-new-username" data-i18n="username">Usuario</label>
+        <input id="qc-new-username" spellcheck="false" name="qc-new-username" autocomplete="off" aria-label="Usuario" type="text" placeholder="nombre.apellido">
+        <label for="qc-new-role" data-i18n="role">Rol</label>
+        <select id="qc-new-role" aria-label="Rol">
           <option value="qc_engineer">qc_engineer</option>
           <option value="qc_coordinator">qc_coordinator</option>
           <option value="qc_supervisor">qc_supervisor</option>
           <option value="qc_auditor">qc_auditor</option>
         </select>
         <label><input id="qc-new-permanent" type="checkbox"> <span data-i18n="permanentAccount">Cuenta permanente</span></label>
-        <div class="modal-actions" style="margin-top:10px;">
-          <button onclick="document.getElementById('qc-create-user-form').style.display='none'" style="background:#666; color:#fff;" data-i18n="cancel">Cancelar</button>
+        <div class="modal-actions" style="margin-top:var(--space-md);">
+          <button onclick="document.getElementById('qc-create-user-form').style.display='none'" style="background:var(--color-surface-raised); color:var(--color-text);" data-i18n="cancel">Cancelar</button>
           <button onclick="submitCreateQcUser()" data-i18n="create">Crear</button>
         </div>
       </div>
       <div id="qc-users-list"></div>
-      <div id="audit-log-section" style="margin-top:30px; display:none;">
-        <h3 style="margin-bottom:10px; color:#94a3b8; font-size:13px;" data-i18n="auditLogTitle">Registro de auditoría</h3>
+      <div id="audit-log-section" style="margin-top:var(--space-2xl); display:none;">
+        <h2 style="margin-bottom:var(--space-md); color:var(--color-text-muted); font-size:var(--text-base);" data-i18n="auditLogTitle">Registro de auditoría</h2>
         <div id="audit-log-table"></div>
       </div>
     </div>
@@ -432,25 +575,25 @@
   <!-- Describe/edit incident modal -->
   <div id="describe-modal-overlay" class="modal-overlay">
     <div class="modal-card">
-      <h3 data-i18n="describeTitle">Describir incidencia</h3>
-      <img id="describe-snapshot-preview" src="" alt="Snapshot">
+      <h2 data-i18n="describeTitle">Describir incidencia</h2>
+      <img id="describe-snapshot-preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='360'/%3E" alt="Captura del feed para la incidencia" width="640" height="360">
       <div id="describe-clip-btn-wrap"></div>
-      <button onclick="captureSnapshotForDescribe()" style="background:#666; color:#fff;" data-i18n="captureSnapshot">📷 Capturar snapshot del feed activo</button>
+      <button onclick="captureSnapshotForDescribe()" style="background:var(--color-surface-raised); color:var(--color-text);" data-i18n="captureSnapshot">📷 Capturar snapshot del feed activo</button>
       <div>
-        <label style="display:block; font-size:11px; font-weight:bold; color:#94a3b8; margin-bottom:6px;" data-i18n="categoryLabel">CATEGORÍA</label>
-        <select id="describe-category" style="width:100%;"></select>
+        <label style="display:block; font-size:var(--text-xs); font-weight:var(--font-weight-bold); color:var(--color-text-muted); margin-bottom:var(--space-sm);" data-i18n="categoryLabel">CATEGORÍA</label>
+        <select id="describe-category" aria-label="Categoría" style="width:100%;"></select>
       </div>
       <div>
-        <label style="display:block; font-size:11px; font-weight:bold; color:#94a3b8; margin-bottom:6px;" data-i18n="severityLabel">SEVERIDAD</label>
-        <select id="describe-severity" style="width:100%;">
+        <label style="display:block; font-size:var(--text-xs); font-weight:var(--font-weight-bold); color:var(--color-text-muted); margin-bottom:var(--space-sm);" data-i18n="severityLabel">SEVERIDAD</label>
+        <select id="describe-severity" aria-label="Severidad" style="width:100%;">
           <option value="P1" data-i18n="sevP1">P1 Crítica</option>
           <option value="P2" selected data-i18n="sevP2">P2 Media</option>
           <option value="P3" data-i18n="sevP3">P3 Baja</option>
         </select>
       </div>
-      <textarea id="describe-desc" data-i18n-placeholder="descPlaceholder" placeholder="Describí el problema..."></textarea>
+      <textarea id="describe-desc" aria-label="Descripción de la incidencia" data-i18n-placeholder="descPlaceholder" placeholder="Describí el problema..."></textarea>
       <div class="modal-actions">
-        <button onclick="closeDescribeModal()" style="background:#666; color:#fff;" data-i18n="cancelBtn">Cancelar</button>
+        <button onclick="closeDescribeModal()" style="background:var(--color-surface-raised); color:var(--color-text);" data-i18n="cancelBtn">Cancelar</button>
         <button onclick="submitDescribe()" data-i18n="save">Guardar</button>
       </div>
     </div>
@@ -461,7 +604,7 @@
     <div class="modal-card wide">
       <div id="report-body"></div>
       <div class="modal-actions">
-        <button onclick="closeReportOverlay()" style="background:#666; color:#fff;" data-i18n="closeBtn">Cerrar</button>
+        <button onclick="closeReportOverlay()" style="background:var(--color-surface-raised); color:var(--color-text);" data-i18n="closeBtn">Cerrar</button>
         <button id="report-export-csv" data-i18n="exportCsv">Exportar CSV</button>
         <button id="report-print" onclick="printReport()" data-i18n="exportPdf">Exportar PDF (Imprimir)</button>
       </div>
@@ -471,10 +614,10 @@
   <!-- Incident clip playback modal (#31) -->
   <div id="clip-modal-overlay" class="modal-overlay">
     <div class="modal-card">
-      <h3 data-i18n="clipModalTitle">Clip del incidente</h3>
-      <video id="clip-player" controls style="width:100%; border-radius:8px; background:#000;"></video>
+      <h2 data-i18n="clipModalTitle">Clip del incidente</h2>
+      <video id="clip-player" controls style="width:100%; border-radius:var(--radius-md); background:var(--color-well);"></video>
       <div class="modal-actions">
-        <button onclick="closeClipModal()" style="background:#666; color:#fff;" data-i18n="closeBtn">Cerrar</button>
+        <button onclick="closeClipModal()" style="background:var(--color-surface-raised); color:var(--color-text);" data-i18n="closeBtn">Cerrar</button>
       </div>
     </div>
   </div>

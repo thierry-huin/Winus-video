@@ -1,0 +1,108 @@
+{
+  "methodology": "Bundled web-design-guidelines references/command.md; reviewed both modified source files and all after screenshots",
+  "findings": [
+    {
+      "location": "web/qc.html:13",
+      "severity": "high",
+      "finding": "Destructive button and severity text contrast below 4.5:1",
+      "status": "fixed; dark text on semantic danger and warning tokens"
+    },
+    {
+      "location": "web/qc.html:227",
+      "severity": "high",
+      "finding": "Interactive controls lacked intentional keyboard focus",
+      "status": "fixed; cyan focus-visible outline"
+    },
+    {
+      "location": "web/qc.html:369",
+      "severity": "medium",
+      "finding": "Authentication inputs lacked persistent labels and autocomplete",
+      "status": "fixed; visible associated labels, autocomplete and name attributes"
+    },
+    {
+      "location": "web/qc.html:451",
+      "severity": "medium",
+      "finding": "Icon-only monitor controls lacked accessible names",
+      "status": "fixed; additive aria-labels"
+    },
+    {
+      "location": "web/qc.html:348",
+      "severity": "medium",
+      "finding": "Mobile header, monitor grids and user management overflowed viewport",
+      "status": "fixed; wrapped controls, minmax tracks and responsive layout"
+    },
+    {
+      "location": "web/qc.html:318",
+      "severity": "medium",
+      "finding": "Modal scrolling and content containment undefined",
+      "status": "fixed; viewport-safe sizing and contained scroll"
+    },
+    {
+      "location": "web/qc.html:579",
+      "severity": "medium",
+      "finding": "Initial snapshot image had empty src and no intrinsic dimensions",
+      "status": "fixed; valid initial transparent SVG, dimensions and hidden empty runtime preview"
+    },
+    {
+      "location": "web/qc.html:534",
+      "severity": "medium",
+      "finding": "Static headings skipped h2 hierarchy",
+      "status": "fixed; section/modal headings h2"
+    },
+    {
+      "location": "web/qc.js:1088",
+      "severity": "medium",
+      "finding": "Dynamic incident/user/report fields lacked accessible names",
+      "status": "fixed; translated aria-labels in presentation templates"
+    },
+    {
+      "location": "web/qc.html:372",
+      "severity": "medium",
+      "finding": "Validation status lacked live-region metadata",
+      "status": "fixed; additive live regions"
+    },
+    {
+      "location": "web/qc.html:441",
+      "severity": "medium",
+      "finding": "Existing click-only feed selection lacks keyboard equivalent",
+      "status": "deferred; changing handlers or interaction violates explicit zero-behavior-change scope"
+    },
+    {
+      "location": "web/qc.js:1172",
+      "severity": "medium",
+      "finding": "Existing modals do not implement focus management or Escape handling",
+      "status": "deferred; behavioral accessibility requires separate approved scope"
+    },
+    {
+      "location": "web/qc.js:705",
+      "severity": "low",
+      "finding": "Existing emoji presentation used by runtime mute state and translated actions",
+      "status": "deferred; preserve existing textContent behavior and dictionaries"
+    },
+    {
+      "location": "web/qc.js:1525",
+      "severity": "low",
+      "finding": "Tab/filter state not URL-synchronized",
+      "status": "deferred; existing navigation behavior outside visual scope"
+    }
+  ],
+  "impeccable": {
+    "baseline": [
+      "low-contrast (2 grouped findings)",
+      "broken-image",
+      "skipped-heading"
+    ],
+    "during_polish": [
+      "undersized-ui-text (LIVE 10px)",
+      "primary-action contrast advisory (4.4:1)"
+    ],
+    "final_source": [],
+    "final_served_page": [],
+    "final_js": []
+  },
+  "limitations": [
+    "No real WebRTC/mediasoup stream, stereo VU audio, snapshot capture, clip playback, reconnect or live P1 audio tested.",
+    "REST data is browser-intercepted fixture data; server authorization, mutations and persistence were not integration-tested.",
+    "Export action wiring is unchanged; actual backend CSV and printer output are not tested."
+  ]
+}

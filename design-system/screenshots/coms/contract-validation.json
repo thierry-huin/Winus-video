@@ -1,0 +1,20 @@
+{
+  "index.html": {
+    "selector_contract_equal": true,
+    "ids_preserved": true,
+    "parents_and_classes_equal": true,
+    "event_handlers_equal": true,
+    "inline_scripts_equal": true
+  },
+  "viewer.js": {
+    "selector_contract_equal": true,
+    "executable_equal_ignoring_dom_presentation": true
+  },
+  "hls.html": {
+    "selector_contract_equal": true,
+    "ids_preserved": true,
+    "parents_and_classes_equal": true,
+    "event_handlers_equal": true,
+    "inline_scripts_equal": true
+  }
+}

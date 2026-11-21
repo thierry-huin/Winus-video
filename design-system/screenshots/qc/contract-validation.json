@@ -1,0 +1,10 @@
+{
+  "selector_contract": "identical",
+  "existing_ids_classes_data_parent_relationships": "identical",
+  "event_handlers": "identical",
+  "javascript_non_presentation_content": "byte-identical after reversing documented presentation substitutions",
+  "existing_ids": 83,
+  "event_handlers_count": 55,
+  "before_mobile_overflows": 16,
+  "after_mobile_overflows": 0
+}
