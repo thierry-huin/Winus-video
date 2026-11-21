@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QC Editorial — Winus Video</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #1a1a2e; color: #e0e0e0; font-family: system-ui, sans-serif; }
+    button { background: #f59e0b; color: #1a1a2e; border: none; padding: 7px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; }
+    button:hover { background: #ffb84d; }
+    button.btn-danger { background: #ff5252; color: #fff; }
+    button.btn-danger:hover { background: #ff8a80; }
+    select, input[type=text], input[type=password], textarea {
+      padding: 7px 10px; border-radius: 6px; border: 1px solid #333; background: #16213e; color: #e0e0e0; font-size: 13px;
+    }
+    /* ── Login / forced password change ── */
+    #login-screen, #pwchange-screen {
+      display: flex; justify-content: center; align-items: center; height: 100vh;
+    }
+    .auth-card { background: #16213e; padding: 40px; border-radius: 16px; width: 360px; text-align: center; }
+    .auth-card h2 { margin-bottom: 8px; color: #f59e0b; }
+    .auth-card p.sub { font-size: 12px; color: #94a3b8; margin-bottom: 20px; }
+    .auth-card input { width: 100%; margin: 6px 0; }
+    .auth-card button { width: 100%; padding: 12px; font-size: 15px; margin-top: 10px; }
+    .auth-error { color: #ff5252; font-size: 12px; min-height: 18px; margin: 6px 0; }
+    #pwchange-screen { display: none; }
+
+    /* ── Header / tabs ── */
+    #main-screen { display: none; }
+    .qc-header {
+      background: #16213e; padding: 10px 20px; display: flex; align-items: center; gap: 16px;
+      border-bottom: 2px solid #f59e0b;
+    }
+    .qc-header h1 { font-size: 18px; color: #f59e0b; }
+    .qc-header .qc-badge { background: #f59e0b; color: #1a1a2e; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; }
+    .qc-header .spacer { flex: 1; }
+    .qc-header a.coms-link {
+      color: #00e676; font-size: 12px; text-decoration: none; margin-right: 10px;
+      border: 1px solid #00e676; border-radius: 6px; padding: 4px 10px; display: inline-block;
+    }
+    .qc-header a.coms-link:hover { background: #00e67622; }
+    #lang-select { font-size: 11px; padding: 4px 6px; margin-right: 4px; }
+    .qc-tabs { display: flex; gap: 4px; background: #16213e; padding: 0 20px; }
+    .qc-tab {
+      background: transparent; color: #94a3b8; padding: 10px 16px; border-radius: 0;
+      border-bottom: 3px solid transparent; font-size: 13px;
+    }
+    .qc-tab.active { color: #f59e0b; border-bottom-color: #f59e0b; }
+    .qc-tab:hover { background: #1a1a2e; }
+    #pending-badge {
+      display: none; background: #ff5252; color: #fff; border-radius: 10px; padding: 1px 7px;
+      font-size: 11px; margin-left: 4px;
+    }
+    .qc-tab-content { display: none; padding: 20px; }
+    .qc-tab-content.active { display: block; }
+
+    /* ── P1 on-screen/sound alert (urgent #1) ── */
+    /* "menos de un destello por segundo" -- deliberately slower than 1/s.
+       prefers-reduced-motion gets a fixed border instead of the pulse. */
+    #p1-alert-banner {
+      display: none; flex-direction: column; gap: 6px; background: #3a0d0d; border-bottom: 2px solid #ff5252;
+      padding: 10px 20px; position: sticky; top: 0; z-index: 1500;
+    }
+    .p1-alert-item { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #ffb4b4; flex-wrap: wrap; }
+    .p1-alert-item button { background: #ff5252; color: #fff; font-size: 12px; padding: 4px 12px; }
+    body.p1-alert-active { animation: p1-pulse 1.2s infinite; }
+    @keyframes p1-pulse {
+      0%, 100% { box-shadow: inset 0 0 0 6px transparent; }
+      50% { box-shadow: inset 0 0 0 6px #ff5252; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body.p1-alert-active { animation: none; box-shadow: inset 0 0 0 6px #ff5252; }
+    }
+
+    /* ── Monitor grid ── */
+    .monitor-toolbar { display: flex; gap: 8px; align-items: center; margin-bottom: 14px; }
+    #active-feed-bar {
+      background: #16213e; border-radius: 8px; padding: 12px 16px; margin-bottom: 14px;
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 13px;
+    }
+    #active-feed-bar.flash { background: #f59e0b44; }
+    #active-feed-bar .session-open { color: #00e676; font-weight: bold; font-size: 12px; }
+    .btn-mark { background: #ff5252; color: #fff; }
+    .btn-mark:hover { background: #ff8a80; }
+    .monitor-grid { display: grid; gap: 10px; }
+    .monitor-grid.layout-1 { grid-template-columns: 1fr; }
+    .monitor-grid.layout-2x1 { grid-template-columns: 1fr 1fr; }
+    .monitor-grid.layout-2x2 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+    /* "1 grande + 3 pequeños": a 2fr/1fr column split, the big cell spans
+       all 3 rows on the left, the 3 small cells stack on the right. Which
+       physical cell occupies "big" vs "small1/2/3" is assigned dynamically
+       via the data-pos attribute (see applyMosaicPositions in qc.js) --
+       clicking a small cell reassigns these WITHOUT restarting its
+       mediasoup connection, only CSS grid-area moves. */
+    .monitor-grid.layout-1-3 { grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr 1fr; }
+    .monitor-grid.layout-1-3 .feed-cell[data-pos="big"] { grid-column: 1; grid-row: 1 / span 3; }
+    .monitor-grid.layout-1-3 .feed-cell[data-pos="small1"] { grid-column: 2; grid-row: 1; }
+    .monitor-grid.layout-1-3 .feed-cell[data-pos="small2"] { grid-column: 2; grid-row: 2; }
+    .monitor-grid.layout-1-3 .feed-cell[data-pos="small3"] { grid-column: 2; grid-row: 3; }
+    .feed-cell {
+      background: #000; border-radius: 10px; border: 3px solid #333; overflow: hidden;
+      display: flex; flex-direction: column; cursor: pointer; position: relative;
+    }
+    .feed-cell.active-feed { border-color: #f59e0b; }
+    .feed-cell video { width: 100%; aspect-ratio: 16/9; background: #000; display: block; flex: 1; min-height: 0; }
+    .feed-cell:fullscreen video, .feed-cell.cell-fullscreen video { aspect-ratio: auto; object-fit: contain; }
+    .feed-nosignal-overlay {
+      position: absolute; inset: 0; bottom: 40px; display: none; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.7); color: #ff5252; font-weight: bold; font-size: 15px; letter-spacing: 1.5px;
+      pointer-events: none;
+    }
+    .feed-cell-bar {
+      display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: #16213e; font-size: 12px;
+    }
+    /* Feed picker shrinks to whatever's left after the VU meter claims its
+       (at least) one-third share below -- min-width:0 lets a flex item
+       actually shrink past its content size instead of overflowing, and
+       text-overflow gives the truncated stream name a visual cue. */
+    .feed-cell-bar select.feed-picker {
+      flex: 1 1 0; min-width: 0; font-size: 11px; padding: 4px 6px;
+      text-overflow: ellipsis; white-space: nowrap; overflow: hidden;
+    }
+    .feed-session-badge { font-size: 10px; color: #94a3b8; flex: 0 0 auto; }
+    .feed-session-badge.open { color: #00e676; font-weight: bold; }
+    .feed-mute-btn, .feed-fullscreen-btn { background: transparent; color: #e0e0e0; padding: 2px 6px; font-size: 14px; flex: 0 0 auto; }
+    .feed-p1-badge { background: #ff5252; color: #fff; border-radius: 8px; padding: 0 5px; font-weight: bold; margin-left: 4px; }
+    /* Per-feed incoming-audio VU meter -- stereo L/R, two horizontal
+       segmented-LED rows (see setupCellVuMeter/startVuMeterLoop in qc.js --
+       the main program audio is a genuinely 2-channel source, unlike the
+       Coms app's mono commentator return mic). flex-basis 34% (of the bar,
+       with flex-grow/shrink both 0) reserves AT LEAST a third of the bar's
+       width for the meter, deliberately prioritized over the feed picker
+       above. Taller (26px vs the old 16px) now that there's more room, for
+       better visibility. */
+    .feed-vu-meter {
+      display: flex; flex-direction: column; gap: 2px; flex: 0 0 34%; width: auto; height: 26px;
+      background: rgba(0,0,0,0.3); border-radius: 3px; padding: 2px; box-sizing: border-box;
+    }
+    .feed-vu-row { display: flex; flex-direction: row; gap: 1px; flex: 1; }
+    .vu-segment { flex: 1; border-radius: 1px; background: rgba(255,255,255,0.08); }
+    .vu-segment.lit-green { background: #00e676; }
+    .vu-segment.lit-orange { background: #ffab40; }
+    .vu-segment.lit-red { background: #ff5252; }
+
+    /* ── Incidents tab ── */
+    .filters-bar { display: flex; gap: 8px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; }
+    .incident-item {
+      background: #16213e; border: 1px solid #333; border-left: 4px solid #334155;
+      border-radius: 8px; padding: 12px 14px; margin-bottom: 10px;
+    }
+    .incident-item.P1 { border-left-color: #ff5252; }
+    .incident-item.P2 { border-left-color: #f59e0b; }
+    .incident-item.P3 { border-left-color: #666680; }
+    .incident-item.voided { opacity: 0.55; }
+    .incident-item.pending { border-left-style: dashed; }
+    .incident-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .incident-sev-badge { font-size: 11px; font-weight: bold; padding: 2px 8px; border-radius: 4px; color: #1a1a2e; }
+    .incident-sev-badge.P1 { background: #ff5252; }
+    .incident-sev-badge.P2 { background: #f59e0b; }
+    .incident-sev-badge.P3 { background: #666680; color: #fff; }
+    .incident-status { font-size: 11px; color: #94a3b8; }
+    .pending-tag { font-size: 11px; color: #f59e0b; font-weight: bold; }
+    .voided-tag { font-size: 11px; color: #ff5252; font-weight: bold; }
+    .incident-cat { font-size: 11px; color: #00c9db; margin-top: 4px; }
+    .incident-desc { font-size: 13px; margin-top: 6px; }
+    .incident-meta { font-size: 11px; color: #94a3b8; margin-top: 6px; }
+    .incident-actions { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; align-items: center; }
+    .incident-actions select { font-size: 11px; padding: 4px 6px; }
+    .incident-actions button { font-size: 11px; padding: 4px 10px; }
+    .empty-hint { text-align: center; padding: 2rem; color: #666680; font-size: 0.85rem; }
+
+    #sessions-table-wrap { margin-top: 24px; }
+    .report-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+    .report-table th, .report-table td { padding: 6px 8px; border-bottom: 1px solid #333; text-align: left; }
+    .report-table tr.voided { opacity: 0.5; }
+    .session-notes-ro { font-size: 11px; color: #94a3b8; margin: 4px 0 8px 14px; }
+
+    /* ── "Ver como" (view-as) role preview (#28) ── */
+    #view-as-banner {
+      display: none; align-items: center; gap: 10px; background: #0d3a2e; border-bottom: 2px solid #00e676;
+      padding: 8px 20px; font-size: 12px; color: #8df5c2;
+    }
+    #view-as-banner button { background: #00e676; color: #0d3a2e; font-size: 11px; padding: 4px 10px; }
+
+    /* ── Users tab ── */
+    .qc-user-row {
+      display: flex; align-items: center; gap: 10px; padding: 8px; border-bottom: 1px solid #333; flex-wrap: wrap;
+    }
+    .qc-user-name { flex: 1; font-weight: bold; min-width: 100px; }
+    .qc-user-flag { font-size: 11px; padding: 2px 8px; border-radius: 10px; background: #333; }
+    .qc-user-flag.active { background: #00e67633; color: #00e676; }
+    .qc-user-flag.inactive { background: #ff525233; color: #ff5252; }
+    #qc-create-user-form { display: none; background: #16213e; padding: 14px; border-radius: 8px; margin-bottom: 14px; }
+    #qc-create-user-form label { font-size: 11px; color: #94a3b8; display: block; margin: 8px 0 4px; }
+
+    /* ── Modals / overlays ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+      align-items: center; justify-content: center; z-index: 1000; padding: 16px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-card {
+      background: #16213e; border-radius: 12px; padding: 20px; width: 100%; max-width: 460px;
+      display: flex; flex-direction: column; gap: 12px; max-height: 90vh; overflow-y: auto;
+    }
+    .modal-card.wide { max-width: 720px; }
+    .modal-card img#describe-snapshot-preview { width: 100%; aspect-ratio: 16/9; object-fit: contain; background: #000; border-radius: 8px; }
+    .modal-card textarea { width: 100%; min-height: 80px; font-family: inherit; resize: vertical; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; }
+    #report-body h2 { color: #f59e0b; margin-bottom: 10px; }
+    #report-body h3 { margin-top: 16px; margin-bottom: 6px; font-size: 13px; color: #94a3b8; }
+    .report-summary { display: flex; gap: 20px; font-size: 13px; flex-wrap: wrap; }
+
+    @media print {
+      .qc-header, .qc-tabs, .modal-actions, #report-export-csv, #report-print, #p1-alert-banner { display: none !important; }
+      body { background: #fff; color: #000; }
+      .modal-overlay { position: static; background: none; }
+      .modal-card { background: #fff; color: #000; box-shadow: none; max-height: none; }
+      .report-table th, .report-table td { border-color: #ccc; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Login -->
+  <div id="login-screen">
+    <div class="auth-card">
+      <h2>QC Editorial</h2>
+      <p class="sub" data-i18n="loginSub">Control de calidad editorial</p>
+      <input id="login-user" type="text" data-i18n-placeholder="loginUser" placeholder="Usuario">
+      <input id="login-pass" type="password" data-i18n-placeholder="loginPass" placeholder="Contraseña" onkeydown="if(event.key==='Enter')doLogin()">
+      <div id="login-error" class="auth-error"></div>
+      <button onclick="doLogin()" data-i18n="loginEnter">Entrar en la estación QC</button>
+    </div>
+  </div>
+
+  <!-- Forced password change (temp-password first login) -->
+  <div id="pwchange-screen">
+    <div class="auth-card">
+      <h2 data-i18n="changePwTitle">Define tu contraseña</h2>
+      <p class="sub" data-i18n="changePwHint">La contraseña provisional solo sirve para la primera entrada. Elige una nueva.</p>
+      <input id="pwchange-current" type="password" data-i18n-placeholder="pwCurrent" placeholder="Contraseña provisional">
+      <input id="pwchange-new" type="password" data-i18n-placeholder="pwNew" placeholder="Nueva contraseña (mín. 10, letras y números)">
+      <input id="pwchange-confirm" type="password" data-i18n-placeholder="pwRepeat" placeholder="Repetir contraseña">
+      <div id="pwchange-error" class="auth-error"></div>
+      <button onclick="submitPasswordChange()" data-i18n="save">Guardar</button>
+    </div>
+  </div>
+
+  <!-- Main app -->
+  <div id="main-screen">
+    <div class="qc-header">
+      <h1>QC Editorial</h1>
+      <span class="qc-badge">LIVE</span>
+      <span class="spacer"></span>
+      <span id="qc-username" style="font-size:12px; color:#94a3b8;"></span>
+      <select id="lang-select" onchange="setLang(this.value)" title="Idioma">
+        <option value="es">ES</option>
+        <option value="pt">PT</option>
+        <option value="en">EN</option>
+      </select>
+      <a class="coms-link" href="/index.html" data-i18n="comsLink">↔ Coms</a>
+      <select id="view-as-select" onchange="setPreviewRole(this.value)" style="display:none;" data-i18n-title="viewAsLabel" title="Ver como">
+        <option value="" data-i18n="viewAsReal">— Mi rol real —</option>
+        <option value="qc_engineer">qc_engineer</option>
+        <option value="qc_coordinator">qc_coordinator</option>
+        <option value="qc_supervisor">qc_supervisor</option>
+        <option value="qc_auditor">qc_auditor</option>
+      </select>
+      <button id="btn-close-day" onclick="closeTheDay()" style="display:none;" data-i18n="closeDay">Cerrar el día</button>
+      <button onclick="logout()" style="background:#ff5252; color:#fff;" data-i18n="logout">Salir</button>
+    </div>
+
+    <!-- "Ver como" preview banner (#28) -- populated by renderViewAsBanner() -->
+    <div id="view-as-banner"></div>
+
+    <!-- P1 on-screen alert (urgent #1) -- populated live by addP1Alert() in
+         qc.js, never from historical data. -->
+    <div id="p1-alert-banner"></div>
+
+    <div class="qc-tabs">
+      <button class="qc-tab active" data-tab="monitor" onclick="showTab('monitor')" data-i18n="navMonitor">Monitor</button>
+      <button class="qc-tab" data-tab="incidents" onclick="showTab('incidents')"><span data-i18n="navIncidents">Incidencias</span> <span id="pending-badge"></span></button>
+      <button class="qc-tab" id="nav-users" data-tab="users" onclick="showTab('users')" style="display:none;" data-i18n="navUsers">Usuarios</button>
+    </div>
+
+    <!-- Monitor tab -->
+    <div class="qc-tab-content active" id="tab-monitor">
+      <div class="monitor-toolbar">
+        <span style="font-size:12px; color:#94a3b8;" data-i18n="viewLabel">Vista:</span>
+        <button onclick="setGridLayout('1')" data-i18n="layout1">1 feed</button>
+        <button onclick="setGridLayout('2x1')" data-i18n="layout2">2 feeds</button>
+        <button onclick="setGridLayout('2x2')" data-i18n="layout4">4 feeds</button>
+        <button onclick="setGridLayout('1-3')" data-i18n="layout1_3">1 + 3</button>
+      </div>
+      <div id="active-feed-bar"></div>
+      <div id="monitor-grid" class="monitor-grid layout-1">
+        <div class="feed-cell active-feed" id="feed-cell-0" onclick="setActiveCell(0)">
+          <video id="feed-video-0" autoplay muted playsinline ondblclick="event.stopPropagation(); toggleCellFullscreen(0)"></video>
+          <div id="feed-nosignal-0" class="feed-nosignal-overlay" data-i18n="noSignal">SIN SEÑAL</div>
+        <div class="feed-cell-bar">
+            <select class="feed-picker" data-cell="0" onclick="event.stopPropagation()" onchange="onFeedPicked(0, this.value)"></select>
+            <span id="feed-session-0" class="feed-session-badge"></span>
+            <div id="feed-vu-0" class="feed-vu-meter" data-i18n-title="muteTooltip" title="Nivel de audio entrante (L/R)">
+              <div id="feed-vu-0-l" class="feed-vu-row"></div>
+              <div id="feed-vu-0-r" class="feed-vu-row"></div>
+            </div>
+            <button id="feed-mute-0" class="feed-mute-btn" onclick="event.stopPropagation(); toggleCellAudio(0)">🔊</button>
+            <button class="feed-fullscreen-btn" data-i18n-title="fullscreenTooltip" onclick="event.stopPropagation(); toggleCellFullscreen(0)">⛶</button>
+          </div>
+        </div>
+        <div class="feed-cell" id="feed-cell-1" onclick="setActiveCell(1)" style="display:none;">
+          <video id="feed-video-1" autoplay muted playsinline ondblclick="event.stopPropagation(); toggleCellFullscreen(1)"></video>
+          <div id="feed-nosignal-1" class="feed-nosignal-overlay" data-i18n="noSignal">SIN SEÑAL</div>
+        <div class="feed-cell-bar">
+            <select class="feed-picker" data-cell="1" onclick="event.stopPropagation()" onchange="onFeedPicked(1, this.value)"></select>
+            <span id="feed-session-1" class="feed-session-badge"></span>
+            <div id="feed-vu-1" class="feed-vu-meter" data-i18n-title="muteTooltip" title="Nivel de audio entrante (L/R)">
+              <div id="feed-vu-1-l" class="feed-vu-row"></div>
+              <div id="feed-vu-1-r" class="feed-vu-row"></div>
+            </div>
+            <button id="feed-mute-1" class="feed-mute-btn" onclick="event.stopPropagation(); toggleCellAudio(1)">🔇</button>
+            <button class="feed-fullscreen-btn" data-i18n-title="fullscreenTooltip" onclick="event.stopPropagation(); toggleCellFullscreen(1)">⛶</button>
+          </div>
+        </div>
+        <div class="feed-cell" id="feed-cell-2" onclick="setActiveCell(2)" style="display:none;">
+          <video id="feed-video-2" autoplay muted playsinline ondblclick="event.stopPropagation(); toggleCellFullscreen(2)"></video>
+          <div id="feed-nosignal-2" class="feed-nosignal-overlay" data-i18n="noSignal">SIN SEÑAL</div>
+        <div class="feed-cell-bar">
+            <select class="feed-picker" data-cell="2" onclick="event.stopPropagation()" onchange="onFeedPicked(2, this.value)"></select>
+            <span id="feed-session-2" class="feed-session-badge"></span>
+            <div id="feed-vu-2" class="feed-vu-meter" data-i18n-title="muteTooltip" title="Nivel de audio entrante (L/R)">
+              <div id="feed-vu-2-l" class="feed-vu-row"></div>
+              <div id="feed-vu-2-r" class="feed-vu-row"></div>
+            </div>
+            <button id="feed-mute-2" class="feed-mute-btn" onclick="event.stopPropagation(); toggleCellAudio(2)">🔇</button>
+            <button class="feed-fullscreen-btn" data-i18n-title="fullscreenTooltip" onclick="event.stopPropagation(); toggleCellFullscreen(2)">⛶</button>
+          </div>
+        </div>
+        <div class="feed-cell" id="feed-cell-3" onclick="setActiveCell(3)" style="display:none;">
+          <video id="feed-video-3" autoplay muted playsinline ondblclick="event.stopPropagation(); toggleCellFullscreen(3)"></video>
+          <div id="feed-nosignal-3" class="feed-nosignal-overlay" data-i18n="noSignal">SIN SEÑAL</div>
+        <div class="feed-cell-bar">
+            <select class="feed-picker" data-cell="3" onclick="event.stopPropagation()" onchange="onFeedPicked(3, this.value)"></select>
+            <span id="feed-session-3" class="feed-session-badge"></span>
+            <div id="feed-vu-3" class="feed-vu-meter" data-i18n-title="muteTooltip" title="Nivel de audio entrante (L/R)">
+              <div id="feed-vu-3-l" class="feed-vu-row"></div>
+              <div id="feed-vu-3-r" class="feed-vu-row"></div>
+            </div>
+            <button id="feed-mute-3" class="feed-mute-btn" onclick="event.stopPropagation(); toggleCellAudio(3)">🔇</button>
+            <button class="feed-fullscreen-btn" data-i18n-title="fullscreenTooltip" onclick="event.stopPropagation(); toggleCellFullscreen(3)">⛶</button>
+          </div>
+        </div>
+      </div>
+      <!-- Used only to show each cell's stream name without extra DOM bookkeeping -->
+      <div style="display:none;">
+        <span id="feed-label-0"></span><span id="feed-label-1"></span><span id="feed-label-2"></span><span id="feed-label-3"></span>
+      </div>
+    </div>
+
+    <!-- Incidents tab -->
+    <div class="qc-tab-content" id="tab-incidents">
+      <div class="filters-bar">
+        <select onchange="setIncidentsFilter({status: this.value})">
+          <option value="" data-i18n="statusAll">Todos los estados</option>
+          <option value="open" data-i18n="statusOpen">Abierta</option>
+          <option value="in_review" data-i18n="stInAnalysis">En análisis</option>
+          <option value="notified" data-i18n="stNotified">Notificado a la venue</option>
+          <option value="resolved" data-i18n="stResolved">Resuelto</option>
+        </select>
+        <select onchange="setIncidentsFilter({severity: this.value})">
+          <option value="" data-i18n="severityAll">Todas las severidades</option>
+          <option value="P1">P1</option>
+          <option value="P2">P2</option>
+          <option value="P3">P3</option>
+        </select>
+        <select id="operator-filter" onchange="setIncidentsFilter({operatorUsername: this.value})">
+          <option value="" data-i18n="operatorAll">Todos los operadores</option>
+        </select>
+        <label style="font-size:12px; color:#94a3b8;">
+          <input type="checkbox" onchange="setIncidentsFilter({includeVoided: this.checked})"> <span data-i18n="showVoided">Mostrar anuladas</span>
+        </label>
+        <label style="font-size:12px; color:#94a3b8;">
+          <input type="checkbox" onchange="setIncidentsFilter({pendingOnly: this.checked})"> <span data-i18n="pendingOnlyFilter">Solo por describir</span>
+        </label>
+        <button onclick="openDayReport()" data-i18n="dayReport">Informe del día</button>
+      </div>
+      <div id="incidents-list"></div>
+
+      <div id="sessions-table-wrap">
+        <h3 style="margin-bottom:10px; color:#94a3b8; font-size:13px;" data-i18n="sessionsByFeed">Sesiones por feed</h3>
+        <label style="font-size:12px; color:#94a3b8;">
+          <input id="sessions-show-archive" type="checkbox" onchange="loadSessionsTable()"> <span data-i18n="showArchive">Mostrar sesiones cerradas</span>
+        </label>
+        <div id="sessions-table"></div>
+      </div>
+    </div>
+
+    <!-- Users tab (qc_supervisor+) -->
+    <div class="qc-tab-content" id="tab-users">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+        <h3 data-i18n="usersTitle">Gestión de usuarios QC</h3>
+        <div style="display:flex; gap:8px;">
+          <button onclick="deactivateTempUsers()" style="background:#666; color:#fff;" data-i18n="deactivateTemp">Desactivar temporales</button>
+          <button onclick="showCreateQcUser()" data-i18n="createUser">+ Nuevo usuario</button>
+        </div>
+      </div>
+      <div id="qc-create-user-form">
+        <label data-i18n="username">Usuario</label>
+        <input id="qc-new-username" type="text" placeholder="nombre.apellido">
+        <label data-i18n="role">Rol</label>
+        <select id="qc-new-role">
+          <option value="qc_engineer">qc_engineer</option>
+          <option value="qc_coordinator">qc_coordinator</option>
+          <option value="qc_supervisor">qc_supervisor</option>
+          <option value="qc_auditor">qc_auditor</option>
+        </select>
+        <label><input id="qc-new-permanent" type="checkbox"> <span data-i18n="permanentAccount">Cuenta permanente</span></label>
+        <div class="modal-actions" style="margin-top:10px;">
+          <button onclick="document.getElementById('qc-create-user-form').style.display='none'" style="background:#666; color:#fff;" data-i18n="cancel">Cancelar</button>
+          <button onclick="submitCreateQcUser()" data-i18n="create">Crear</button>
+        </div>
+      </div>
+      <div id="qc-users-list"></div>
+      <div id="audit-log-section" style="margin-top:30px; display:none;">
+        <h3 style="margin-bottom:10px; color:#94a3b8; font-size:13px;" data-i18n="auditLogTitle">Registro de auditoría</h3>
+        <div id="audit-log-table"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Describe/edit incident modal -->
+  <div id="describe-modal-overlay" class="modal-overlay">
+    <div class="modal-card">
+      <h3 data-i18n="describeTitle">Describir incidencia</h3>
+      <img id="describe-snapshot-preview" src="" alt="Snapshot">
+      <div id="describe-clip-btn-wrap"></div>
+      <button onclick="captureSnapshotForDescribe()" style="background:#666; color:#fff;" data-i18n="captureSnapshot">📷 Capturar snapshot del feed activo</button>
+      <div>
+        <label style="display:block; font-size:11px; font-weight:bold; color:#94a3b8; margin-bottom:6px;" data-i18n="categoryLabel">CATEGORÍA</label>
+        <select id="describe-category" style="width:100%;"></select>
+      </div>
+      <div>
+        <label style="display:block; font-size:11px; font-weight:bold; color:#94a3b8; margin-bottom:6px;" data-i18n="severityLabel">SEVERIDAD</label>
+        <select id="describe-severity" style="width:100%;">
+          <option value="P1" data-i18n="sevP1">P1 Crítica</option>
+          <option value="P2" selected data-i18n="sevP2">P2 Media</option>
+          <option value="P3" data-i18n="sevP3">P3 Baja</option>
+        </select>
+      </div>
+      <textarea id="describe-desc" data-i18n-placeholder="descPlaceholder" placeholder="Describí el problema..."></textarea>
+      <div class="modal-actions">
+        <button onclick="closeDescribeModal()" style="background:#666; color:#fff;" data-i18n="cancelBtn">Cancelar</button>
+        <button onclick="submitDescribe()" data-i18n="save">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Report overlay (day/session) -->
+  <div id="report-overlay" class="modal-overlay">
+    <div class="modal-card wide">
+      <div id="report-body"></div>
+      <div class="modal-actions">
+        <button onclick="closeReportOverlay()" style="background:#666; color:#fff;" data-i18n="closeBtn">Cerrar</button>
+        <button id="report-export-csv" data-i18n="exportCsv">Exportar CSV</button>
+        <button id="report-print" onclick="printReport()" data-i18n="exportPdf">Exportar PDF (Imprimir)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Incident clip playback modal (#31) -->
+  <div id="clip-modal-overlay" class="modal-overlay">
+    <div class="modal-card">
+      <h3 data-i18n="clipModalTitle">Clip del incidente</h3>
+      <video id="clip-player" controls style="width:100%; border-radius:8px; background:#000;"></video>
+      <div class="modal-actions">
+        <button onclick="closeClipModal()" style="background:#666; color:#fff;" data-i18n="closeBtn">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="mediasoup-client.min.js?v=45"></script>
+  <script src="qc.js?v=3"></script>
+</body>
+</html>

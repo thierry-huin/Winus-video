@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Winus Video — HLS</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; background: #000; overflow: hidden; }
+  #video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #000; }
+  /* Stream name (top-left) + a self-updating clock (top-right) -- the "g2g"
+     (glass-to-glass) visual reference: compare this on-screen clock against
+     a real clock next to the TV, same spirit as the publisher's own ⏱
+     clockoverlay button (installer/tools/publish.js), just rendered as plain
+     HTML/CSS here instead of burned into the video pixels (see the plan's
+     "opción mejor" -- avoids any server-side decode/encode of video). */
+  #overlay-name, #overlay-clock {
+    position: absolute; top: 0; padding: 10px 18px;
+    font-family: system-ui, sans-serif; font-size: 22px; font-weight: bold;
+    color: #e0e0e0; text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+    background: linear-gradient(rgba(0,0,0,0.55), transparent);
+    pointer-events: none; z-index: 2;
+  }
+  #overlay-name { left: 0; }
+  #overlay-clock { right: 0; font-variant-numeric: tabular-nums; }
+  #message {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-family: system-ui, sans-serif; font-size: 26px; color: #a0a0b8; text-align: center;
+    padding: 40px; z-index: 3;
+  }
+  /* Shown only when the browser's autoplay policy forced us to start muted
+     (see attachHls/tryPlay below) -- most desktop browsers (Chrome, Safari)
+     block autoplay WITH sound unless the user already interacted with the
+     page, so we fall back to muted+autoplay and surface this big, remote
+     control/click/tap-friendly button to turn sound on. Smart TV browsers
+     (WebOS) are generally more lenient and often never show this at all. */
+  #unmute-btn {
+    position: absolute; left: 50%; bottom: 8%; transform: translateX(-50%);
+    display: none; align-items: center; gap: 10px;
+    font-family: system-ui, sans-serif; font-size: 22px; font-weight: bold;
+    color: #fff; background: rgba(20,20,30,0.85); border: 2px solid #fff;
+    border-radius: 999px; padding: 14px 28px; cursor: pointer; z-index: 4;
+  }
+  #unmute-btn:focus { outline: 3px solid #4da3ff; }
+  /* Diagnostic readout of the <video>/hls.js internal state -- there's no
+     devtools on a TV, so this is the only way to see WHY a black screen is
+     happening (stuck paused? never buffering? decode errors?) without
+     physical access to a debugger. Small/unobtrusive but always on top. */
+  #debug {
+    position: absolute; left: 0; bottom: 0; right: 0; padding: 6px 10px;
+    font-family: monospace; font-size: 14px; color: #0f0; background: rgba(0,0,0,0.6);
+    pointer-events: none; z-index: 5; white-space: pre-wrap;
+  }
+</style>
+</head>
+<body>
+  <video id="video" autoplay playsinline></video>
+  <div id="overlay-name"></div>
+  <div id="overlay-clock"></div>
+  <button id="unmute-btn" type="button">🔊 Activar sonido</button>
+  <div id="message">Cargando...</div>
+  <div id="debug"></div>
+  <script src="hls.min.js"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const streamId = params.get('s');
+    const key = params.get('k');
+    const video = document.getElementById('video');
+    const overlayName = document.getElementById('overlay-name');
+    const overlayClock = document.getElementById('overlay-clock');
+    const messageEl = document.getElementById('message');
+    const unmuteBtn = document.getElementById('unmute-btn');
+    const debugEl = document.getElementById('debug');
+    let lastHlsEvent = '-';
+
+    // Surface MediaError from the <video> element itself -- this fires on
+    // decode/pipeline failures that may NOT go through hls.js's own ERROR
+    // event (e.g. the native-HLS fallback branch below sets video.src
+    // directly, bypassing hls.js entirely).
+    video.addEventListener('error', () => {
+      const err = video.error;
+      lastHlsEvent = `video error code=${err ? err.code : '?'}`;
+    });
+
+    setInterval(() => {
+      const buf = video.buffered.length ? video.buffered.end(video.buffered.length - 1).toFixed(1) : '0';
+      debugEl.textContent = `paused=${video.paused} readyState=${video.readyState} networkState=${video.networkState} ` +
+        `ct=${video.currentTime.toFixed(1)} buffered=${buf} muted=${video.muted}\nlast=${lastHlsEvent}`;
+    }, 1000);
+
+    unmuteBtn.addEventListener('click', () => {
+      video.muted = false;
+      video.play().catch(() => {});
+      unmuteBtn.style.display = 'none';
+    });
+
+    // Try to autoplay WITH sound first (works on most Smart TV browsers,
+    // including WebOS). If the browser's autoplay policy rejects that
+    // (typical on desktop Chrome/Safari -- NotAllowedError), fall back to
+    // muted autoplay and show the tap/click-to-unmute button so the viewer
+    // can turn sound on with one click/remote press instead of silently
+    // playing muted forever.
+    function tryPlay() {
+      video.muted = false;
+      const p = video.play();
+      if (p && p.catch) {
+        p.catch(() => {
+          video.muted = true;
+          video.play().catch(() => {});
+          unmuteBtn.style.display = 'flex';
+          unmuteBtn.focus();
+        });
+      }
+    }
+
+    const RETRY_MS = 5000;
+    let hls = null;
+    let currentPlaylistUrl = null;
+
+    function showMessage(text) {
+      messageEl.textContent = text;
+      messageEl.style.display = 'flex';
+    }
+    function hideMessage() {
+      messageEl.style.display = 'none';
+    }
+
+    function tickClock() {
+      overlayClock.textContent = new Date().toLocaleTimeString();
+    }
+    setInterval(tickClock, 1000);
+    tickClock();
+
+    function attachHls(rawUrl) {
+      if (currentPlaylistUrl === rawUrl) return; // already playing this playlist
+      currentPlaylistUrl = rawUrl;
+      // Resolve to an ABSOLUTE url -- the backend hands back a root-relative
+      // path (e.g. "/hls/<key>/playlist.m3u8"), which the page's own fetch()/
+      // hls.js loader resolve fine against document baseURI, but some Smart
+      // TV native media pipelines (used via the video.canPlayType() branch
+      // below, which hands the URL off to an OS-level player outside the
+      // webview's own network stack) fail to resolve a relative URL at all
+      // and immediately reject it as unsupported (readyState=0,
+      // networkState=NETWORK_NO_SOURCE, video.error.code=4) without ever
+      // attempting a request.
+      const url = new URL(rawUrl, location.href).href;
+      if (window.Hls && window.Hls.isSupported()) {
+        lastHlsEvent = 'using hls.js';
+        if (hls) { try { hls.destroy(); } catch (_) {} }
+        hls = new window.Hls({ liveDurationInfinity: true });
+        hls.loadSource(url);
+        hls.attachMedia(video);
+        hls.on(window.Hls.Events.ERROR, (_evt, data) => {
+          lastHlsEvent = `${(data && data.fatal) ? 'FATAL' : 'warn'} ${(data && data.type) || '?'}/${(data && data.details) || '?'}`;
+          if (data && data.fatal) {
+            // Surface the actual error on-screen -- on a TV there's no
+            // devtools/console to inspect, so this is the only practical
+            // way to find out WHY playback failed (e.g. codec/profile
+            // rejected by the decoder vs. a network/manifest error).
+            showMessage(`Error HLS: ${data.type || '?'} / ${data.details || '?'}`);
+            // Let the next poll() cycle recover -- a fresh /api/hls-info
+            // fetch will re-attach if the stream is still (or becomes) live.
+            currentPlaylistUrl = null;
+          }
+        });
+        hls.on(window.Hls.Events.FRAG_BUFFERED, () => { lastHlsEvent = 'frag buffered ok'; });
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        // Native HLS support (Safari, some Smart TV browsers)
+        lastHlsEvent = 'using native HLS (video.src)';
+        video.src = url;
+      } else {
+        showMessage('Este navegador no soporta HLS.');
+        return;
+      }
+      tryPlay();
+      hideMessage();
+    }
+
+    async function poll() {
+      if (!streamId || !key) {
+        showMessage('Enlace inválido.');
+        return;
+      }
+      try {
+        const res = await fetch(`/api/hls-info?s=${encodeURIComponent(streamId)}&k=${encodeURIComponent(key)}`, { cache: 'no-store' });
+        if (!res.ok) {
+          currentPlaylistUrl = null;
+          showMessage('Stream no disponible.');
+          return;
+        }
+        const data = await res.json();
+        overlayName.textContent = data.streamName || '';
+        attachHls(data.playlistUrl);
+      } catch (_) {
+        showMessage('Stream no disponible.');
+      }
+    }
+
+    poll();
+    setInterval(poll, RETRY_MS);
+  </script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+/**
+ * Winus Video — Shared Design Tokens
+ *
+ * Single source of truth for color/type/spacing/motion used by BOTH web
+ * apps (qc.html/qc.js and index.html/viewer.js), so a technician moving
+ * between them experiences one consistent product instead of two
+ * differently-skinned tools. See ../DESIGN_SYSTEM.md for the full rationale
+ * (brand tone: precisión, calma, confianza) and the research behind every
+ * decision below.
+ *
+ * IMPORTANT for anyone extending either app: never hardcode a hex color,
+ * font-size, spacing, radius, shadow, or transition duration directly in a
+ * component's CSS. Reference one of these custom properties instead, so a
+ * future palette/scale adjustment only has to happen here, once.
+ *
+ * This file is PURELY visual (custom properties only) — it never defines
+ * element selectors, so linking it can never change layout/behavior on its
+ * own. Both apps `<link>` this file before their own `<style>` block.
+ */
+
+:root {
+  /* ============================================================
+   * COLOR — neutrals (backgrounds, surfaces, borders, text)
+   * Evolved from the dark navy already shared by both apps
+   * (#1a1a2e / #16213e), not replaced — the existing palette already had
+   * the right bones (desaturated navy, not pure black, easy on the eyes
+   * across a long shift); this just names it and fills the gaps (no
+   * elevated-surface or sunken/well tokens existed before).
+   * ============================================================ */
+  --color-bg: #1a1a2e;           /* page background */
+  --color-surface: #16213e;       /* panels, header, cards, modals */
+  --color-surface-raised: #1f2b4d; /* hover/active row on a surface, popovers */
+  --color-well: #000000;          /* recessed areas: video frame, code/log blocks */
+  --color-border: #333a52;        /* default hairline border */
+  --color-border-strong: #475569; /* emphasized border (inputs on focus-adjacent, dividers) */
+
+  --color-text: #e0e0e0;          /* primary text */
+  --color-text-muted: #94a3b8;    /* secondary text, meta, timestamps */
+  --color-text-dim: #666680;      /* disabled, placeholder, least important */
+  --color-text-on-brand: #1a1a2e; /* text placed on top of a brand/accent-filled surface */
+
+  /* ============================================================
+   * COLOR — semantic (status/meaning, never used as decoration)
+   * Six roles, deliberately kept separate so no hue carries two
+   * meanings at once (see DESIGN_SYSTEM.md "Semantic color map"):
+   *   brand   = this product, primary actions, identity
+   *   select  = "this control is currently pressed/active" (existing,
+   *             explicit product convention — never repurposed)
+   *   info    = focus rings, links, informational highlights
+   *   success = on-air / active / healthy / resolved
+   *   warning = P2, caution, needs attention soon
+   *   danger  = P1, error, destructive, on-air-PGM tally
+   * ============================================================ */
+  --color-brand: #7b2ff7;
+  --color-brand-hover: #9b6bff;
+  --color-brand-subtle: rgba(123, 47, 247, 0.16);
+
+  --color-select: #2979ff;        /* pressed/active toggle — per product convention */
+  --color-select-subtle: rgba(41, 121, 255, 0.16);
+
+  --color-info: #00c9db;          /* focus ring, links, informational accents */
+  --color-info-subtle: rgba(0, 201, 219, 0.16);
+
+  --color-success: #00e676;
+  --color-success-hover: #00c853;
+  --color-success-subtle: rgba(0, 230, 118, 0.16);
+
+  --color-warning: #f59e0b;       /* the single amber — replaces #ffab40/#ff9800 drift */
+  --color-warning-hover: #ffb84d;
+  --color-warning-subtle: rgba(245, 158, 11, 0.16);
+
+  --color-danger: #ff5252;
+  --color-danger-hover: #ff8a80;
+  --color-danger-subtle: rgba(255, 82, 82, 0.16);
+
+  /* ============================================================
+   * TYPOGRAPHY
+   * System font stacks on purpose (no @import/Google Fonts): this runs for
+   * hours on control-room machines that may sit on a locked-down facility
+   * network with no reliable outbound internet — a web-font fetch is an
+   * avoidable operational risk for zero real benefit here. --font-mono is
+   * reserved for DATA (timecodes, IDs, counters, logs), never for body
+   * copy or headings, so "this is a measured value" stays visually
+   * distinct from "this is a label a human wrote".
+   * ============================================================ */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", Menlo, Consolas, monospace;
+
+  /* Base size stays below the generic "16px minimum" guidance ON PURPOSE:
+   * this is a dense, multi-feed monitoring console, not a reading page —
+   * forcing 16px body text would blow out every grid/table and push real
+   * information off-screen, which hurts usability far more than a few
+   * extra pixels help. Legibility is protected instead via contrast,
+   * line-height, and weight (see DESIGN_SYSTEM.md "Density vs legibility").
+   * Long-form text (incident descriptions, printed reports) opts UP to
+   * --text-md/--leading-normal explicitly rather than raising the base. */
+  --text-2xs: 10px;
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-base: 13px;
+  --text-md: 15px;
+  --text-lg: 18px;
+  --text-xl: 22px;
+  --text-2xl: 28px;
+
+  --leading-tight: 1.25;   /* headings, tabular/dense UI */
+  --leading-normal: 1.5;   /* body paragraphs, descriptions, long-form text */
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+
+  /* ============================================================
+   * SPACING — density 8/10 (dense/dashboard), validated against
+   * ui-ux-pro-max's generator for this product category.
+   * ============================================================ */
+  --space-2xs: 2px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --space-2xl: 32px;
+
+  /* ============================================================
+   * SHAPE
+   * ============================================================ */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-full: 999px;
+
+  /* ============================================================
+   * ELEVATION — tuned for a DARK surface (the generator's default
+   * shadow opacities assume a light background and read as invisible
+   * here; these are strong enough to actually separate a modal/popover
+   * from the page behind it).
+   * ============================================================ */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
+
+  /* ============================================================
+   * MOTION — subtle by design (motion dial 2/10): this is a tool
+   * technicians stare at for a full shift, not a marketing page —
+   * motion should only ever confirm a state change, never decorate.
+   * EVERY transition/animation in both apps must also be wrapped in
+   * (or short-circuited by) a prefers-reduced-motion check.
+   * ============================================================ */
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+  --duration-slow: 280ms;
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Global reduced-motion contract: any animation/transition not explicitly
+   exempted collapses to near-instant. Component CSS should still prefer
+   wrapping its own non-essential motion in this query directly, but this
+   is the safety net for anything that doesn't. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

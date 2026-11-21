@@ -1,0 +1,8 @@
+*.tar.gz
+*.tar.gz.sha256
+.venv/
+installer/.venv/
+installer/__pycache__/
+**/__pycache__/
+node_modules/
+.DS_Store
