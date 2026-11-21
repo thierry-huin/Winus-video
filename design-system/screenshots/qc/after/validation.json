@@ -1,0 +1,230 @@
+[
+  {
+    "name": "login",
+    "width": 390,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "login-error",
+    "width": 390,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "password-change",
+    "width": 390,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "monitor-1",
+    "width": 390,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "monitor-2x1",
+    "width": 390,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "monitor-2x2",
+    "width": 390,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "monitor-1-3",
+    "width": 390,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "monitor-alert-preview",
+    "width": 390,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "incidents-empty",
+    "width": 390,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "incidents-populated",
+    "width": 390,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "sessions-populated",
+    "width": 390,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "users-empty",
+    "width": 390,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "users-create",
+    "width": 390,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "users-audit",
+    "width": 390,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "describe-incident",
+    "width": 390,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "describe-with-snapshot",
+    "width": 390,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "report-day",
+    "width": 390,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "report-session",
+    "width": 390,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "clip",
+    "width": 390,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "login",
+    "width": 1440,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "login-error",
+    "width": 1440,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "password-change",
+    "width": 1440,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "monitor-1",
+    "width": 1440,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "monitor-2x1",
+    "width": 1440,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "monitor-2x2",
+    "width": 1440,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "monitor-1-3",
+    "width": 1440,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "monitor-alert-preview",
+    "width": 1440,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "incidents-empty",
+    "width": 1440,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "incidents-populated",
+    "width": 1440,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "sessions-populated",
+    "width": 1440,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "users-empty",
+    "width": 1440,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "users-create",
+    "width": 1440,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "users-audit",
+    "width": 1440,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "describe-incident",
+    "width": 1440,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "describe-with-snapshot",
+    "width": 1440,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "report-day",
+    "width": 1440,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "report-session",
+    "width": 1440,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "clip",
+    "width": 1440,
+    "overflow": false,
+    "errors": []
+  }
+]

@@ -1078,20 +1078,20 @@ function renderIncidentsList(incidents) {
         ${inc.category ? `<div class="incident-cat">${categoryLabel(inc.category)}</div>` : ''}
         <div class="incident-desc">${inc.description || `<em>${t('noDescription')}</em>`}</div>
         <div class="incident-meta">
-          ${inc.timecode || ''} · ${inc.operator_username} (${inc.operator_role}) · ${inc.created_at}
+          <span class="incident-timecode">${inc.timecode || ''}</span> · ${inc.operator_username} (${inc.operator_role}) · ${inc.created_at}
           ${voided ? `<br>${t('voidedByLabel')} ${inc.voided_by}: ${inc.void_reason}` : ''}
         </div>
         <div class="incident-actions">
           ${inc.pending ? `<button onclick="openDescribeModal(${inc.id})">${t('describeBtn')}</button>` : ''}
           ${!inc.pending && !voided && (mine || isSupervisor) ? `<button onclick="openDescribeModal(${inc.id})">${t('editBtn')}</button>` : ''}
           ${!voided && (mine || isSupervisor) ? `
-            <select onchange="setIncidentStatus(${inc.id}, this.value)">
+            <select aria-label="${t('colStatus')}" onchange="setIncidentStatus(${inc.id}, this.value)">
               ${Object.keys(STATUS_KEYS).map((k) => `<option value="${k}" ${inc.status === k ? 'selected' : ''}>${statusLabel(k)}</option>`).join('')}
             </select>
             <button onclick="voidIncidentPrompt(${inc.id})">${t('voidBtn')}</button>` : ''}
           ${(inc.pending && (mine || isSupervisor)) || (voided && isSupervisor)
             ? `<button class="btn-danger" onclick="deleteIncidentById(${inc.id})">${t('deleteBtn')}</button>` : ''}
-          ${inc.clip_path ? `<button onclick="playIncidentClip(${inc.id})" style="background:#666; color:#fff;">▶ ${t('clipBtn')}</button>` : ''}
+          ${inc.clip_path ? `<button onclick="playIncidentClip(${inc.id})" style="background:var(--color-surface-raised); color:var(--color-text);">▶ ${t('clipBtn')}</button>` : ''}
         </div>
       </div>
     </div>`;
@@ -1145,7 +1145,7 @@ async function openDescribeModal(id) {
   const clipWrap = document.getElementById('describe-clip-btn-wrap');
   const incident = lastIncidentsList.find((i) => i.id === id);
   clipWrap.innerHTML = incident?.clip_path
-    ? `<button onclick="playIncidentClip(${id})" style="background:#666; color:#fff;">▶ ${t('clipBtn')}</button>` : '';
+    ? `<button onclick="playIncidentClip(${id})" style="background:var(--color-surface-raised); color:var(--color-text);">▶ ${t('clipBtn')}</button>` : '';
   document.getElementById('describe-modal-overlay').classList.add('active');
 }
 
@@ -1331,12 +1331,12 @@ function renderReportOverlay(report, csvPath, csvName, title, editableSessionId)
     </li>`).join('');
   const notesEditorHtml = editableSessionId ? `
     <h3>${t('execSummaryLabel')}</h3>
-    <textarea id="report-exec-summary" placeholder="${t('execSummaryPlaceholder')}">${report.sessions[0]?.exec_summary || ''}</textarea>
+    <textarea aria-label="${t('execSummaryLabel')}" id="report-exec-summary" placeholder="${t('execSummaryPlaceholder')}">${report.sessions[0]?.exec_summary || ''}</textarea>
     <h3>${t('recommendationsLabel')}</h3>
-    <textarea id="report-recommendations" placeholder="${t('recommendationsPlaceholder')}">${report.sessions[0]?.recommendations || ''}</textarea>
+    <textarea aria-label="${t('recommendationsLabel')}" id="report-recommendations" placeholder="${t('recommendationsPlaceholder')}">${report.sessions[0]?.recommendations || ''}</textarea>
     <div class="modal-actions" style="justify-content:flex-start;">
       <button onclick="saveSessionNotes(${editableSessionId})">${t('saveNotes')}</button>
-      <span id="report-notes-saved" style="font-size:12px; color:#00e676; display:none;">${t('saved')}</span>
+      <span id="report-notes-saved" aria-live="polite" style="font-size:var(--text-sm); color:var(--color-success); display:none;">${t('saved')}</span>
     </div>` : '';
   body.innerHTML = `
     <h2>${title}</h2>
@@ -1425,7 +1425,7 @@ async function loadQcUsers() {
   list.innerHTML = users.map((u) => `
     <div class="qc-user-row">
       <span class="qc-user-name">${u.username}</span>
-      <select onchange="changeQcUserRole(${u.id}, this.value)">
+      <select aria-label="${t('role')}" onchange="changeQcUserRole(${u.id}, this.value)">
         ${['qc_coordinator', 'qc_supervisor', 'qc_engineer', 'qc_auditor'].map((r) => `<option value="${r}" ${u.role === r ? 'selected' : ''}>${r}</option>`).join('')}
       </select>
       <span class="qc-user-flag">${u.permanent ? t('colPermanent') : t('colTemporary')}</span>
