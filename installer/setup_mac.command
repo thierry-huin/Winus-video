@@ -197,8 +197,23 @@ echo "  ✓ Entorno virtual OK"
 
 # ---- 4. Python packages ----
 echo "▸ [4/7] Instalando paquetes Python..."
-pip install --quiet --upgrade pip 2>/dev/null
-pip install --quiet customtkinter sounddevice numpy 2>/dev/null
+# NOTE: no longer silencing stderr here (was `2>/dev/null` on both lines) --
+# that made every failure in this step show only the generic "Error en la
+# instalación" message from the ERR trap above with zero diagnostic info,
+# the actual pip error having been thrown away. Let pip's real output
+# (and the ERR trap, which already does `exit 1` on failure) surface instead.
+#
+# IMPORTANT: use "$VENV_DIR/bin/python3" -m pip explicitly, NOT bare `pip`/
+# `python3` -- confirmed on a real machine that even AFTER `source
+# "$VENV_DIR/bin/activate"` above, a python.org Python.framework install (or
+# a shell plugin re-asserting its own PATH entries) can still shadow the
+# venv's own `pip`/`python3`, silently installing into that OTHER
+# interpreter's user site-packages instead of this venv -- then failing with
+# "Defaulting to user installation because normal site-packages is not
+# writeable" with zero indication the venv was bypassed. An explicit path
+# can't be shadowed this way.
+"$VENV_DIR/bin/python3" -m pip install --quiet --upgrade pip
+"$VENV_DIR/bin/python3" -m pip install --quiet customtkinter sounddevice numpy
 echo "  ✓ Paquetes Python OK"
 
 # PyGObject (gi + GstWebRTC/GstSdp typelibs), needed by tools/return-audio-receiver.py
@@ -267,9 +282,8 @@ if [ -f /opt/homebrew/bin/brew ]; then
     eval "\$(/opt/homebrew/bin/brew shellenv)"
 fi
 cd "$SCRIPT_DIR"
-source "$VENV_DIR/bin/activate"
 export RETURN_AUDIO_PYTHON="$GI_PYTHON"
-python3 "$SCRIPT_DIR/video_publisher.py"
+"$VENV_DIR/bin/python3" "$SCRIPT_DIR/video_publisher.py"
 RUN_EOF
 chmod +x "$APP_RESOURCES/run.command"
 
@@ -338,9 +352,8 @@ if [ -f /opt/homebrew/bin/brew ]; then
     eval "\$(/opt/homebrew/bin/brew shellenv)"
 fi
 cd "$SCRIPT_DIR"
-source "$VENV_DIR/bin/activate"
 export RETURN_AUDIO_PYTHON="$GI_PYTHON"
-python3 "$SCRIPT_DIR/video_publisher.py"
+"$VENV_DIR/bin/python3" "$SCRIPT_DIR/video_publisher.py"
 LAUNCHER_EOF
 chmod +x "$LAUNCHER"
 echo "  ✓ Lanzador .command creado"
