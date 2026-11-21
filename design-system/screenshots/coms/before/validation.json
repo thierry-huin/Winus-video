@@ -1,0 +1,320 @@
+[
+  {
+    "width": 390,
+    "state": "login",
+    "viewport": 390,
+    "scroll": 390,
+    "offenders": []
+  },
+  {
+    "width": 390,
+    "state": "login-error",
+    "viewport": 390,
+    "scroll": 390,
+    "offenders": []
+  },
+  {
+    "width": 390,
+    "state": "app-chooser",
+    "viewport": 390,
+    "scroll": 390,
+    "offenders": []
+  },
+  {
+    "width": 390,
+    "state": "empty-streams",
+    "viewport": 390,
+    "scroll": 423,
+    "offenders": [
+      "BUTTON#."
+    ]
+  },
+  {
+    "width": 390,
+    "state": "admin",
+    "viewport": 390,
+    "scroll": 737,
+    "offenders": [
+      "BUTTON#.",
+      "BUTTON#.",
+      "BUTTON#.",
+      "SPAN#.hls-link-status",
+      "BUTTON#.",
+      "BUTTON#.",
+      "BUTTON#.btn-admin-talk",
+      "BUTTON#.",
+      "BUTTON#.",
+      "SPAN#.hls-link-status",
+      "BUTTON#.",
+      "BUTTON#."
+    ]
+  },
+  {
+    "width": 390,
+    "state": "add-user",
+    "viewport": 390,
+    "scroll": 737,
+    "offenders": [
+      "BUTTON#.",
+      "BUTTON#.",
+      "BUTTON#.",
+      "SPAN#.hls-link-status",
+      "BUTTON#.",
+      "BUTTON#.",
+      "BUTTON#.btn-admin-talk",
+      "BUTTON#.",
+      "BUTTON#.",
+      "SPAN#.hls-link-status",
+      "BUTTON#.",
+      "BUTTON#."
+    ]
+  },
+  {
+    "width": 390,
+    "state": "publisher-streams",
+    "viewport": 390,
+    "scroll": 675,
+    "offenders": [
+      "BUTTON#.",
+      "BUTTON#.",
+      "BUTTON#.",
+      "SPAN#.hls-link-status",
+      "BUTTON#.",
+      "BUTTON#.btn-admin-talk"
+    ]
+  },
+  {
+    "width": 390,
+    "state": "admin-empty",
+    "viewport": 390,
+    "scroll": 423,
+    "offenders": [
+      "BUTTON#."
+    ]
+  },
+  {
+    "width": 390,
+    "nativeDialogs": [
+      {
+        "type": "prompt",
+        "message": "New password for \"control-room\":"
+      },
+      {
+        "type": "confirm",
+        "message": "Delete user \"control-room\"?"
+      },
+      {
+        "type": "confirm",
+        "message": "Reset server? This will disconnect all streams and viewers."
+      },
+      {
+        "type": "confirm",
+        "message": "¿Forzar el cierre del stream \"stream-1\"?\n\nCorta la transmisión en el servidor ahora mismo; el resto de streams/viewers no se ven afectados. El publisher deberá volver a iniciarlo."
+      },
+      {
+        "type": "confirm",
+        "message": "¿Generar un enlace nuevo para este stream?\n\nEl enlace viejo dejará de funcionar para NUEVAS conexiones, pero no desconecta a quien ya está conectado con él (usará el botón Desconectar para eso)."
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "state": "viewer-pgm",
+    "viewport": 390,
+    "scroll": 423,
+    "offenders": [
+      "BUTTON#.",
+      "DIV#video-top-overlay."
+    ]
+  },
+  {
+    "width": 390,
+    "state": "viewer-talkback",
+    "viewport": 390,
+    "scroll": 423,
+    "offenders": [
+      "BUTTON#.",
+      "DIV#video-top-overlay."
+    ]
+  },
+  {
+    "width": 390,
+    "state": "viewer-peer-talk",
+    "viewport": 390,
+    "scroll": 423,
+    "offenders": [
+      "BUTTON#.",
+      "DIV#video-top-overlay."
+    ]
+  },
+  {
+    "width": 390,
+    "state": "viewer-fullscreen",
+    "viewport": 390,
+    "scroll": 423,
+    "offenders": [
+      "BUTTON#."
+    ]
+  },
+  {
+    "width": 390,
+    "fullscreen": {
+      "active": "video-container",
+      "controlsParent": "video-container",
+      "controlsClass": "return-audio-fs"
+    }
+  },
+  {
+    "width": 390,
+    "fullscreenRestored": true
+  },
+  {
+    "width": 390,
+    "state": "hls-invalid",
+    "viewport": 390,
+    "scroll": 390,
+    "offenders": []
+  },
+  {
+    "width": 390,
+    "state": "hls-unavailable",
+    "viewport": 390,
+    "scroll": 390,
+    "offenders": []
+  },
+  {
+    "width": 1440,
+    "state": "login",
+    "viewport": 1440,
+    "scroll": 1440,
+    "offenders": []
+  },
+  {
+    "width": 1440,
+    "state": "login-error",
+    "viewport": 1440,
+    "scroll": 1440,
+    "offenders": []
+  },
+  {
+    "width": 1440,
+    "state": "app-chooser",
+    "viewport": 1440,
+    "scroll": 1440,
+    "offenders": []
+  },
+  {
+    "width": 1440,
+    "state": "empty-streams",
+    "viewport": 1440,
+    "scroll": 1440,
+    "offenders": []
+  },
+  {
+    "width": 1440,
+    "state": "admin",
+    "viewport": 1440,
+    "scroll": 1440,
+    "offenders": []
+  },
+  {
+    "width": 1440,
+    "state": "add-user",
+    "viewport": 1440,
+    "scroll": 1440,
+    "offenders": []
+  },
+  {
+    "width": 1440,
+    "state": "publisher-streams",
+    "viewport": 1440,
+    "scroll": 1440,
+    "offenders": []
+  },
+  {
+    "width": 1440,
+    "state": "admin-empty",
+    "viewport": 1440,
+    "scroll": 1440,
+    "offenders": []
+  },
+  {
+    "width": 1440,
+    "nativeDialogs": [
+      {
+        "type": "prompt",
+        "message": "New password for \"control-room\":"
+      },
+      {
+        "type": "confirm",
+        "message": "Delete user \"control-room\"?"
+      },
+      {
+        "type": "confirm",
+        "message": "Reset server? This will disconnect all streams and viewers."
+      },
+      {
+        "type": "confirm",
+        "message": "¿Forzar el cierre del stream \"stream-1\"?\n\nCorta la transmisión en el servidor ahora mismo; el resto de streams/viewers no se ven afectados. El publisher deberá volver a iniciarlo."
+      },
+      {
+        "type": "confirm",
+        "message": "¿Generar un enlace nuevo para este stream?\n\nEl enlace viejo dejará de funcionar para NUEVAS conexiones, pero no desconecta a quien ya está conectado con él (usará el botón Desconectar para eso)."
+      }
+    ]
+  },
+  {
+    "width": 1440,
+    "state": "viewer-pgm",
+    "viewport": 1440,
+    "scroll": 1440,
+    "offenders": []
+  },
+  {
+    "width": 1440,
+    "state": "viewer-talkback",
+    "viewport": 1440,
+    "scroll": 1440,
+    "offenders": []
+  },
+  {
+    "width": 1440,
+    "state": "viewer-peer-talk",
+    "viewport": 1440,
+    "scroll": 1440,
+    "offenders": []
+  },
+  {
+    "width": 1440,
+    "state": "viewer-fullscreen",
+    "viewport": 1440,
+    "scroll": 1440,
+    "offenders": []
+  },
+  {
+    "width": 1440,
+    "fullscreen": {
+      "active": "video-container",
+      "controlsParent": "video-container",
+      "controlsClass": "return-audio-fs"
+    }
+  },
+  {
+    "width": 1440,
+    "fullscreenRestored": true
+  },
+  {
+    "width": 1440,
+    "state": "hls-invalid",
+    "viewport": 1440,
+    "scroll": 1440,
+    "offenders": []
+  },
+  {
+    "width": 1440,
+    "state": "hls-unavailable",
+    "viewport": 1440,
+    "scroll": 1440,
+    "offenders": []
+  }
+]
