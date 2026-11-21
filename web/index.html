@@ -110,13 +110,14 @@
     #login-screen h1 { font-size: var(--text-2xl); margin-bottom: var(--space-xl); }
     #login-form-fields label { display: block; font-size: var(--text-sm); font-weight: var(--font-weight-medium); margin-bottom: var(--space-xs); }
     #login-form-fields input { display: block; width: 100%; margin-bottom: var(--space-lg); }
-    #login-form-fields button { width: 100%; min-height: 44px; background: var(--color-brand-hover); color: var(--color-text-on-brand); border-color: var(--color-brand-hover); font-weight: var(--font-weight-bold); }
-    #login-form-fields button:hover { background: var(--color-text); border-color: var(--color-text); }
+    #login-form-fields button { width: 100%; min-height: 44px; background: color-mix(in srgb, var(--color-brand) 90%, var(--color-well)); color: var(--color-text); border-color: var(--color-brand-hover); font-weight: var(--font-weight-bold); }
+    #login-form-fields button:hover { background: var(--color-brand-hover); color: var(--color-well); border-color: var(--color-brand-hover); }
     #login-error { color: var(--color-danger); font-size: var(--text-sm); min-height: var(--space-xl); margin-bottom: var(--space-sm); overflow-wrap: anywhere; }
     #app-chooser { display: none; }
     #app-chooser p { color: var(--color-text-muted); margin-bottom: var(--space-lg); }
     #app-chooser button { width: 100%; padding: var(--space-md); font-size: var(--text-base); font-weight: var(--font-weight-bold); margin-top: var(--space-sm); text-align: left; }
-    #app-chooser button:first-of-type { background: var(--color-brand-hover); color: var(--color-text-on-brand); }
+    #app-chooser button:first-of-type { background: color-mix(in srgb, var(--color-brand) 90%, var(--color-well)); color: var(--color-text); border-color: var(--color-brand-hover); }
+    #app-chooser button:first-of-type:hover { background: var(--color-brand-hover); color: var(--color-well); border-color: var(--color-brand-hover); }
     #app-chooser .btn-qc { background: var(--color-surface-raised); color: var(--color-text); }
     #app-chooser button:hover { border-color: var(--color-info); }
     #admin-panel { margin-top: var(--space-xl); }
